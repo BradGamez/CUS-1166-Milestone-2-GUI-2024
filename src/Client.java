@@ -3,12 +3,14 @@ public class Client {
     private String password;
     private int ID;
     private String fullName;
+    private double balance;
 
-    public Client(String username, String password, int ID, String fullName) {
+    public Client(String username, String password, int ID, String fullName, double balance) {
         this.username = username;
         this.password = password;
         this.ID = ID;
         this.fullName = fullName;
+        this.balance = balance;
     }
 
     public String getUsername() {
@@ -41,5 +43,17 @@ public class Client {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
+
+    public String toString() {
+        return getUsername() + "\n" + getPassword() + "\n" + getID() + "\n" + getFullName() + "\n" + getBalance();
     }
 }

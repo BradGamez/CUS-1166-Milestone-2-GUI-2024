@@ -62,4 +62,8 @@ public class Car {
     public void setType(String type) {
         this.type = type;
     }
+
+    public String toString() {
+        return getModel() + "\n" + getMake() + "\n" + getYear() +  "\n" + getVIN() + "\n" + getPlateNum() + "\n" + getType();
+    }
 }

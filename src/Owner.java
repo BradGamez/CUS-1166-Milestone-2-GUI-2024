@@ -4,12 +4,14 @@ public class Owner {
     private int ID;
     private String fullName;
     private Car car;
+    private double balance;
 
-    public Owner(String username, String password, int ID, String fullName, Car car) {
+    public Owner(String username, String password, int ID, String fullName, double balance, Car car) {
         this.username = username;
         this.password = password;
         this.ID = ID;
         this.fullName = fullName;
+        this.balance = balance;
         this.car = car;
     }
 
@@ -45,11 +47,23 @@ public class Owner {
         this.fullName = fullName;
     }
 
+    public double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
+
     public Car getCar() {
         return car;
     }
 
     public void setCar(Car car) {
         this.car = car;
+    }
+
+    public String toString() {
+        return getUsername() + "\n" + getPassword() + "\n" + getID() + "\n" + getFullName() + "\n" + getBalance();
     }
 }
