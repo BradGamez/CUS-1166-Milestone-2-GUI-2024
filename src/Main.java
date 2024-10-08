@@ -183,10 +183,10 @@ public class Main {
 
         //usernames and passwords
         ArrayList<Client> clientArray = new ArrayList<>();
-        clientArray.add(new Client("user1","password",00001,"John Doe", 0));
+        clientArray.add(new Client("user1","password",00001,"John Doe", 0.00));
         ArrayList<Owner> ownerArray = new ArrayList<>();
-        ownerArray.add(new Owner("user2","password",00002,"Jane Doe",
-                0, new Car("Atlas Cross Sport","Volkswagon", 2024,"1HGBH41JXMN109186","MM52SAM","gas")));
+        ownerArray.add(new Owner("user2","password",00002,"Jane Doe",0.00,
+                new Car("Atlas Cross Sport","Volkswagon", 2024,"1HGBH41JXMN109186","MM52SAM","gas")));
 
         JLabel userLabel = new JLabel("username: ");
         JTextField userTextField = new JTextField(30);
@@ -251,7 +251,7 @@ public class Main {
 
         //client profile page
         JPanel clientProfilePanel = new JPanel();
-        clientProfilePanel.setLayout(new GridLayout(4,2));
+        clientProfilePanel.setLayout(new GridLayout(6,2));
 
         JLabel clientNameLabel = new JLabel("Name: ");
         JLabel clientName = new JLabel(clientArray.get(userArrayPosition[0]).getFullName());
@@ -270,6 +270,12 @@ public class Main {
 
         clientProfilePanel.add(clientProfileIDLabel);
         clientProfilePanel.add(clientProfileID);
+
+        JLabel clientBalanceLabel = new JLabel("Account Balance: ");
+        JLabel clientBalance = new JLabel(String.valueOf(clientArray.get(userArrayPosition[0]).getBalance()));
+
+        clientProfilePanel.add(clientBalanceLabel);
+        clientProfilePanel.add(clientBalance);
 
         JButton clientProfileButton = new JButton("Profile");
         informationInputJobSubmitterPanel.add(clientProfileButton);
@@ -297,7 +303,7 @@ public class Main {
 
         //car owner profile page
         JPanel ownerProfilePanel = new JPanel();
-        ownerProfilePanel.setLayout(new GridLayout(4,2));
+        ownerProfilePanel.setLayout(new GridLayout(7,2));
 
         JLabel ownerNameLabel = new JLabel("Name: ");
         JLabel ownerName = new JLabel(ownerArray.get(userArrayPosition[0]).getFullName());
@@ -316,6 +322,18 @@ public class Main {
 
         ownerProfilePanel.add(ownerProfileIDLabel);
         ownerProfilePanel.add(ownerProfileID);
+
+        JLabel ownerBalanceLabel = new JLabel("Account Balance: ");
+        JLabel ownerBalance = new JLabel(String.valueOf(ownerArray.get(userArrayPosition[0]).getBalance()));
+
+        ownerProfilePanel.add(ownerBalanceLabel);
+        ownerProfilePanel.add(ownerBalance);
+
+        JLabel ownerCarLabel = new JLabel("Car: ");
+        JLabel carInfo = new JLabel(ownerArray.get(userArrayPosition[0]).getCar().toString());
+
+        ownerProfilePanel.add(ownerCarLabel);
+        ownerProfilePanel.add(carInfo);
 
         JButton ownerProfileButton = new JButton("Profile");
         informationInputCarOwnerPanel.add(ownerProfileButton);
