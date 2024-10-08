@@ -183,10 +183,10 @@ public class Main {
 
         //usernames and passwords
         ArrayList<Client> clientArray = new ArrayList<>();
-        clientArray.add(new Client("user1","password",00001,"John Doe"));
+        clientArray.add(new Client("user1","password",00001,"John Doe", 0));
         ArrayList<Owner> ownerArray = new ArrayList<>();
         ownerArray.add(new Owner("user2","password",00002,"Jane Doe",
-                new Car("Atlas Cross Sport","Volkswagon", 2024,"1HGBH41JXMN109186","MM52SAM","gas")));
+                0, new Car("Atlas Cross Sport","Volkswagon", 2024,"1HGBH41JXMN109186","MM52SAM","gas")));
 
         JLabel userLabel = new JLabel("username: ");
         JTextField userTextField = new JTextField(30);
