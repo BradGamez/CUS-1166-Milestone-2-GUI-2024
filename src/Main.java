@@ -17,9 +17,8 @@ public class Main {
     public static void main(String[] args) {
         JFrame frame = new JFrame("Vehicular Cloud Console");
         frame.setSize(1280, 720);
-        frame.setLayout(new GridLayout(2, 3));
+        frame.setLayout(new GridBagLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);
 
         // Job Submitter Panel Setup and Information
 
@@ -93,7 +92,6 @@ public class Main {
             }
         });
 
-        frame.add(informationInputJobSubmitterPanel);
         informationInputJobSubmitterPanel.setVisible(false);
 
         // Car Owner Panel Setup and Information
@@ -168,9 +166,6 @@ public class Main {
             }
         });
 
-        frame.add(informationInputCarOwnerPanel);
-
-
         informationInputCarOwnerPanel.setVisible(false);
 
         // Part B
@@ -205,8 +200,6 @@ public class Main {
         int[] userArrayPosition = new int[1];
 
         //job submitter login
-        JPanel clientJobSubmitterPanel = new JPanel();
-
         JButton clientJobSubmitterButton = new JButton("Job Submitter Login");
         currentSelectionPanel.add(clientJobSubmitterButton);
 
@@ -500,7 +493,6 @@ public class Main {
             }
         });
 
-        frame.add(clientJobSubmitterPanel);
         frame.add(currentSelectionPanel);
 
         // Part A
