@@ -202,7 +202,7 @@ public class Main {
 
         currentSelectionPanel.add(currentSelectionButton);
 
-        final int[] userArrayPosition = {0};
+        int[] userArrayPosition = new int[1];
 
         //job submitter login
         JPanel clientJobSubmitterPanel = new JPanel();
@@ -223,7 +223,7 @@ public class Main {
                         informationInputJobSubmitterPanel.setVisible(true);
                         userArrayPosition[0] = i;
                         System.out.println(clientArray);
-                        System.out.println(userArrayPosition);
+                        System.out.println(userArrayPosition[0]);
                     }
                 }
             }
@@ -317,17 +317,14 @@ public class Main {
         clientJobSubmitterCreationButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println(clientJobSubmitterCreationButton.getText());
                 String username = userCreateTextField.getText();
                 String password = passwordCreateTextField.getText();
                 String fullname = fullnameCreateTextField.getText();
                 clientArray.add(new Client(username,password,clientArray.size() + ownerArray.size() + 1,fullname, 0.00));
-                currentSelectionButton.setText("Job Submitter");
+                currentSelectionButton.setText("Account Created");
                 currentSelectionPanel.setVisible(false);
                 informationInputJobSubmitterPanel.setVisible(true);
                 userArrayPosition[0] = clientArray.size() - 1;
-                System.out.println(clientArray);
-                System.out.println(userArrayPosition);
             }
         });
 
@@ -338,7 +335,6 @@ public class Main {
         clientCarOwnerCreationButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println(clientCarOwnerCreationButton.getText());
                 String username = userCreateTextField.getText();
                 String password = passwordCreateTextField.getText();
                 String fullname = fullnameCreateTextField.getText();
@@ -350,7 +346,7 @@ public class Main {
                 String carType = carTypeCreateTextField.getText();
 
                 ownerArray.add(new Owner(username, password,clientArray.size() + ownerArray.size() + 1, fullname, 0.00, new Car(carModel, carMake, carYear, carVin, carPlateNumber, carType)));
-                currentSelectionButton.setText("Car Owner");
+                currentSelectionButton.setText("Account Created");
                 currentSelectionPanel.setVisible(false);
                 informationInputCarOwnerPanel.setVisible(true);
                 userArrayPosition[0] = ownerArray.size() - 1;
@@ -391,6 +387,11 @@ public class Main {
         clientProfileButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                clientName.setText(clientArray.get(userArrayPosition[0]).getFullName());
+                clientUsername.setText(clientArray.get(userArrayPosition[0]).getUsername());
+                clientProfileID.setText(String.valueOf(clientArray.get(userArrayPosition[0]).getID()));
+                clientBalance.setText(String.valueOf(clientArray.get(userArrayPosition[0]).getBalance()));
+
                 clientProfilePanel.setVisible(true);
                 informationInputJobSubmitterPanel.setVisible(false);
             }
@@ -449,6 +450,12 @@ public class Main {
         ownerProfileButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                ownerName.setText(ownerArray.get(userArrayPosition[0]).getFullName());
+                ownerUsername.setText(ownerArray.get(userArrayPosition[0]).getUsername());
+                ownerProfileID.setText(String.valueOf(ownerArray.get(userArrayPosition[0]).getID()));
+                ownerBalance.setText(String.valueOf(ownerArray.get(userArrayPosition[0]).getBalance()));
+                carInfo.setText(ownerArray.get(userArrayPosition[0]).getCar().toString());
+
                 ownerProfilePanel.setVisible(true);
                 informationInputCarOwnerPanel.setVisible(false);
             }
