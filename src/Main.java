@@ -544,14 +544,15 @@ public class Main {
         
         // Calculate Total Job Duration
         JButton calculateButton = new JButton("Total Job Duration");
-        //informationInputJobSubmitterPanel.add(calculateButton);
+        informationInputJobSubmitterPanel.add(calculateButton);
         
         calculateButton.addActionListener(new ActionListener() {
         	@Override
         	public void actionPerformed(ActionEvent e) {
-        		int totalDuration = jobDurations.stream().mapToInt(Integer::intValue).sum();
-        		JOptionPane.showMessageDialog(frame, "Total Job Duration: " + totalDuration);
-        		
+        		int totalDuration = jobDurations.stream().mapToInt(Integer::intValue).sum();      		
+        		//Convert totalDuration to hours and format the message
+        		String message = String.format("Total Job Duration: %d hr%s", totalDuration, totalDuration == 1 ? "" : "s"); 
+        		JOptionPane.showMessageDialog(frame, message);
         	}
         });
         
