@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 public class Main {
@@ -19,11 +20,13 @@ public class Main {
         frame.setSize(480, 600);
         frame.setLayout(new GridBagLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+       List<Integer> jobDurations = new ArrayList<>(); 
 
         // Job Submitter Panel Setup and Information
 
         JPanel informationInputJobSubmitterPanel = new JPanel();
-        informationInputJobSubmitterPanel.setLayout(new GridLayout(6, 2));
+        informationInputJobSubmitterPanel.setLayout(new GridLayout(8, 2));
 
         JLabel clientIDLabel = new JLabel("Client ID: ");
         JTextField clientIDTextField = new JTextField(30);
@@ -58,6 +61,11 @@ public class Main {
                 String jobDeadline = jobDeadlineTextField.getText();
 
                 String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+                
+                try {
+                	int jobDurationInt = Integer.parseInt(jobDuration);
+                	jobDurations.add(jobDurationInt);
+               
 
                 try(FileWriter writer = new FileWriter("job_submitter_data.txt", true)){
                     writer.write("Client ID: " + clientID + "\n");
@@ -67,6 +75,10 @@ public class Main {
                 }
                 catch(IOException ex) {
                     ex.printStackTrace();
+                }
+                
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(null, "Please enter a valid number for job duration.");
                 }
 
                 //Store submission in list
@@ -167,13 +179,17 @@ public class Main {
         });
 
         informationInputCarOwnerPanel.setVisible(false);
+        
+        //Back Button
+        JButton backButton = new JButton("Back");
 
         // log in panel
 
         JPanel logInPanel = new JPanel(new GridLayout(4, 2));
 
         JLabel currentSelectionButton = new JLabel("");
-
+        
+        
         logInPanel.setVisible(false);
 
         //usernames and passwords
@@ -194,6 +210,8 @@ public class Main {
 
         logInPanel.add(passwordLabel);
         logInPanel.add(passwordTextField);
+        
+        backButton.setVisible(true);
 
         int[] userArrayPosition = new int[1];
 
@@ -219,18 +237,22 @@ public class Main {
                 }
             }
         });
+        
+        
 
         //car owner login
 
         JButton clientCarOwnerButton = new JButton("Car Owner Login");
         logInPanel.add(clientCarOwnerButton);
+        
+        
 
         clientCarOwnerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println(currentSelectionButton.getText());
                 String username = userTextField.getText();
-                String password = passwordTextField.getText();
+                String password = new String(passwordTextField.getPassword()); 
                 for (int i = 0; i < ownerArray.size(); i++) {
                     if (username.equals(ownerArray.get(i).getUsername()) && password.equals(ownerArray.get(i).getPassword())) {
                         currentSelectionButton.setText("Car Owner");
@@ -241,6 +263,8 @@ public class Main {
                 }
             }
         });
+        
+       
 
         // create account
         JPanel createAccountPanel = new JPanel(new GridLayout(13,2));
@@ -302,6 +326,7 @@ public class Main {
 
 
         createAccountPanel.add(currentSelectionButton);
+   
 
 
         //job submitter create account
@@ -348,6 +373,7 @@ public class Main {
         });
 
         createAccountPanel.add(currentSelectionButton);
+        
 
         // Home page
         JPanel homePagePanel = new JPanel(new GridLayout(5,1));
@@ -366,8 +392,11 @@ public class Main {
             public void actionPerformed(ActionEvent e) {
                 homePagePanel.setVisible(false);
                 logInPanel.setVisible(true);
+                logInPanel.add(backButton);
             }
         });
+        
+        
 
         JButton createAccountPageButton = new JButton("Create Account");
         homePagePanel.add(createAccountPageButton);
@@ -377,11 +406,24 @@ public class Main {
             public void actionPerformed(ActionEvent e) {
                 homePagePanel.setVisible(false);
                 createAccountPanel.setVisible(true);
+                createAccountPanel.add(backButton);
             }
         });
 
         homePagePanel.setVisible(true);
         frame.add(homePagePanel);
+        
+      
+      // Back Button Setup  
+        backButton.addActionListener(new ActionListener(){
+        	@Override
+        	public void actionPerformed(ActionEvent e) {
+        		logInPanel.setVisible(false);
+        		createAccountPanel.setVisible(false);
+        		homePagePanel.setVisible(true);
+        	}
+        });
+        
 
 
         //client profile page
@@ -440,7 +482,21 @@ public class Main {
                 informationInputJobSubmitterPanel.setVisible(true);
             }
         });
-
+        
+        // Calculate Total Job Duration
+        JButton calculateButton = new JButton("Total Job Duration");
+        //informationInputJobSubmitterPanel.add(calculateButton);
+        
+        calculateButton.addActionListener(new ActionListener() {
+        	@Override
+        	public void actionPerformed(ActionEvent e) {
+        		int totalDuration = jobDurations.stream().mapToInt(Integer::intValue).sum();
+        		JOptionPane.showMessageDialog(frame, "Total Job Duration: " + totalDuration);
+        		
+        	}
+        });
+        
+        
         //car owner profile page
         JPanel ownerProfilePanel = new JPanel();
         ownerProfilePanel.setLayout(new GridLayout(7,2));
@@ -508,6 +564,7 @@ public class Main {
         //job submitter log out button
         JButton jobSubmitterLogoutButton = new JButton("Log Out");
         informationInputJobSubmitterPanel.add(jobSubmitterLogoutButton);
+        informationInputJobSubmitterPanel.add(calculateButton);
 
         jobSubmitterLogoutButton.addActionListener(new ActionListener() {
             @Override
@@ -530,6 +587,7 @@ public class Main {
                 currentSelectionButton.setText("");
             }
         });
+        
 
         frame.add(logInPanel);
         frame.add(createAccountPanel);
