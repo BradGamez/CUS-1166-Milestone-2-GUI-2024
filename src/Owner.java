@@ -1,42 +1,16 @@
-public class Owner {
-    private String username;
-    private String password;
-    private int ID;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Owner extends Account {
     private String fullName;
-    private Car car;
+    private List<Car> cars = new ArrayList<>();
     private double balance;
 
     public Owner(String username, String password, int ID, String fullName, double balance, Car car) {
-        this.username = username;
-        this.password = password;
-        this.ID = ID;
+        super(username, password, ID);
         this.fullName = fullName;
         this.balance = balance;
-        this.car = car;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public int getID() {
-        return ID;
-    }
-
-    public void setID(int ID) {
-        this.ID = ID;
+        cars.add(car);
     }
 
     public String getFullName() {
@@ -55,12 +29,20 @@ public class Owner {
         this.balance = balance;
     }
 
-    public Car getCar() {
-        return car;
+    public List<Car> getCars() {
+        return cars;
     }
 
-    public void setCar(Car car) {
-        this.car = car;
+    public void addCar(Car car) {
+        cars.add(car);
+    }
+
+    public boolean removeCar(Car car) {
+        return cars.remove(car);
+    }
+
+    public void setCars(List<Car> car) {
+        this.cars = cars;
     }
 
     public String toString() {

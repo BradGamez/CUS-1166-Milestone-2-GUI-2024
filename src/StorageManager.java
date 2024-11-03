@@ -27,7 +27,7 @@ public class StorageManager {
             while (scanner.hasNextLine()) {
                 list.add(scanner.nextLine());
             }
-            return new Car(list.get(0).toString(), list.get(1).toString(), Integer.parseInt(list.get(2).toString()), list.get(3).toString(), list.get(4).toString(), list.get(5).toString());
+            return new Car(list.get(0).toString(), list.get(1).toString(), Integer.parseInt(list.get(2).toString()), list.get(3).toString(), list.get(4).toString(), list.get(5).toString(), true);
         } catch (FileNotFoundException error) {
             error.printStackTrace();
             return null;

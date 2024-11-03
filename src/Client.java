@@ -1,40 +1,15 @@
-public class Client {
-    private String username;
-    private String password;
-    private int ID;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Client extends Account {
     private String fullName;
     private double balance;
+    private List<Job> jobs = new ArrayList<>();
 
     public Client(String username, String password, int ID, String fullName, double balance) {
-        this.username = username;
-        this.password = password;
-        this.ID = ID;
+        super(username, password, ID);
         this.fullName = fullName;
         this.balance = balance;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public int getID() {
-        return ID;
-    }
-
-    public void setID(int ID) {
-        this.ID = ID;
     }
 
     public String getFullName() {
@@ -51,6 +26,18 @@ public class Client {
 
     public void setBalance(double balance) {
         this.balance = balance;
+    }
+
+    public List<Job> getJobs() {
+        return jobs;
+    }
+
+    public void requestJob(Job job) {
+        jobs.add(job);
+    }
+
+    public void setJobs(List<Job> jobs) {
+        this.jobs = jobs;
     }
 
     public String toString() {

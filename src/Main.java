@@ -181,7 +181,7 @@ public class Main {
         clientArray.add(new Client("user1","password",00001,"John Doe", 0.00));
         ArrayList<Owner> ownerArray = new ArrayList<>();
         ownerArray.add(new Owner("user2","password",00002,"Jane Doe",0.00,
-                new Car("Atlas Cross Sport","Volkswagon", 2024,"1HGBH41JXMN109186","MM52SAM","gas")));
+                new Car("Atlas Cross Sport","Volkswagon", 2024,"1HGBH41JXMN109186","MM52SAM","gas", true)));
 
         JLabel userLabel = new JLabel("username: ");
         JTextField userTextField = new JTextField(30);
@@ -339,7 +339,7 @@ public class Main {
                 String carPlateNumber = carPlateNumberCreateTextField.getText();
                 String carType = carTypeCreateTextField.getText();
 
-                ownerArray.add(new Owner(username, password,clientArray.size() + ownerArray.size() + 1, fullname, 0.00, new Car(carModel, carMake, carYear, carVin, carPlateNumber, carType)));
+                ownerArray.add(new Owner(username, password,clientArray.size() + ownerArray.size() + 1, fullname, 0.00, new Car(carModel, carMake, carYear, carVin, carPlateNumber, carType, true)));
                 currentSelectionButton.setText("Account Created");
                 createAccountPanel.setVisible(false);
                 informationInputCarOwnerPanel.setVisible(true);
@@ -470,7 +470,7 @@ public class Main {
         ownerProfilePanel.add(ownerBalance);
 
         JLabel ownerCarLabel = new JLabel("Car: ");
-        JLabel carInfo = new JLabel(ownerArray.get(userArrayPosition[0]).getCar().toString());
+        JLabel carInfo = new JLabel(ownerArray.get(userArrayPosition[0]).getCars().toString());
 
         ownerProfilePanel.add(ownerCarLabel);
         ownerProfilePanel.add(carInfo);
@@ -485,7 +485,7 @@ public class Main {
                 ownerUsername.setText(ownerArray.get(userArrayPosition[0]).getUsername());
                 ownerProfileID.setText(String.valueOf(ownerArray.get(userArrayPosition[0]).getID()));
                 ownerBalance.setText(String.valueOf(ownerArray.get(userArrayPosition[0]).getBalance()));
-                carInfo.setText(ownerArray.get(userArrayPosition[0]).getCar().toString());
+                carInfo.setText(ownerArray.get(userArrayPosition[0]).getCars().toString());
 
                 ownerProfilePanel.setVisible(true);
                 informationInputCarOwnerPanel.setVisible(false);

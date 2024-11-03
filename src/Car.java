@@ -5,14 +5,16 @@ public class Car {
     private String VIN;
     private String plateNum;
     private String type;
+    private boolean acceptingJobs;
 
-    public Car(String model, String make, int year, String VIN, String plateNum, String type) {
+    public Car(String model, String make, int year, String VIN, String plateNum, String type, boolean acceptingJobs) {
         Model = model;
         Make = make;
         Year = year;
         this.VIN = VIN;
         this.plateNum = plateNum;
         this.type = type;
+        this.acceptingJobs = acceptingJobs;
     }
 
     public String getModel() {
@@ -61,6 +63,14 @@ public class Car {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public boolean isAcceptingJobs() {
+        return acceptingJobs;
+    }
+
+    public void setAcceptingJobs(boolean acceptingJobs) {
+        this.acceptingJobs = acceptingJobs;
     }
 
     public String toString() {
