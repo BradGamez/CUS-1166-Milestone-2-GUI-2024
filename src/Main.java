@@ -216,10 +216,10 @@ public class Main {
         int[] userArrayPosition = new int[1];
 
         //job submitter login
-        JButton clientJobSubmitterButton = new JButton("Job Submitter Login");
-        logInPanel.add(clientJobSubmitterButton);
+        JButton clientJobSubmitterLoginButton = new JButton("Job Submitter Login");
+        logInPanel.add(clientJobSubmitterLoginButton);
 
-        clientJobSubmitterButton.addActionListener(new ActionListener() {
+        clientJobSubmitterLoginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println(currentSelectionButton.getText());
@@ -242,12 +242,12 @@ public class Main {
 
         //car owner login
 
-        JButton clientCarOwnerButton = new JButton("Car Owner Login");
-        logInPanel.add(clientCarOwnerButton);
+        JButton clientCarOwnerLoginButton = new JButton("Car Owner Login");
+        logInPanel.add(clientCarOwnerLoginButton);
         
         
 
-        clientCarOwnerButton.addActionListener(new ActionListener() {
+        clientCarOwnerLoginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println(currentSelectionButton.getText());
@@ -263,12 +263,21 @@ public class Main {
                 }
             }
         });
-        
-       
+
 
         // create account
         JPanel createAccountPanel = new JPanel(new GridLayout(13,2));
         createAccountPanel.setVisible(false);
+
+        JRadioButton JobSubmitterAccountRadioButton = new JRadioButton("Job Submitter");
+        JRadioButton CarOwnerAccountRadioButton = new JRadioButton("Car Owner");
+
+        ButtonGroup selectNewAccountType = new ButtonGroup();
+        selectNewAccountType.add(JobSubmitterAccountRadioButton);
+        selectNewAccountType.add(CarOwnerAccountRadioButton);
+        createAccountPanel.add(JobSubmitterAccountRadioButton);
+        createAccountPanel.add(CarOwnerAccountRadioButton);
+        JobSubmitterAccountRadioButton.setSelected(true);
 
         JLabel userCreateLabel = new JLabel("username: ");
         JTextField userCreateTextField = new JTextField(30);
@@ -293,41 +302,51 @@ public class Main {
 
         createAccountPanel.add(carModelCreateLabel);
         createAccountPanel.add(carModelCreateTextField);
+        carModelCreateLabel.setVisible(false);
+        carModelCreateTextField.setVisible(false);
 
         JLabel carMakeCreateLabel = new JLabel("car make: ");
         JTextField carMakeCreateTextField = new JTextField(30);
 
         createAccountPanel.add(carMakeCreateLabel);
         createAccountPanel.add(carMakeCreateTextField);
+        carMakeCreateLabel.setVisible(false);
+        carMakeCreateTextField.setVisible(false);
 
         JLabel carYearCreateLabel = new JLabel("car year: ");
         JTextField carYearCreateTextField = new JTextField(30);
 
         createAccountPanel.add(carYearCreateLabel);
         createAccountPanel.add(carYearCreateTextField);
+        carYearCreateLabel.setVisible(false);
+        carYearCreateTextField.setVisible(false);
 
         JLabel carVinCreateLabel = new JLabel("car vin: ");
         JTextField carVinCreateTextField = new JTextField(30);
 
         createAccountPanel.add(carVinCreateLabel);
         createAccountPanel.add(carVinCreateTextField);
+        carVinCreateLabel.setVisible(false);
+        carVinCreateTextField.setVisible(false);
 
         JLabel carPlateNumberCreateLabel = new JLabel("car plate number: ");
         JTextField carPlateNumberCreateTextField = new JTextField(30);
 
         createAccountPanel.add(carPlateNumberCreateLabel);
         createAccountPanel.add(carPlateNumberCreateTextField);
+        carPlateNumberCreateLabel.setVisible(false);
+        carPlateNumberCreateTextField.setVisible(false);
 
         JLabel carTypeCreateLabel = new JLabel("car type: ");
         JTextField carTypeCreateTextField = new JTextField(30);
 
         createAccountPanel.add(carTypeCreateLabel);
         createAccountPanel.add(carTypeCreateTextField);
+        carTypeCreateLabel.setVisible(false);
+        carTypeCreateTextField.setVisible(false);
 
 
         createAccountPanel.add(currentSelectionButton);
-   
-
 
         //job submitter create account
         JButton clientJobSubmitterCreationButton = new JButton("Job Submitter Create Account");
@@ -350,6 +369,7 @@ public class Main {
         //owner create account
         JButton clientCarOwnerCreationButton = new JButton("Car Owner Create Account");
         createAccountPanel.add(clientCarOwnerCreationButton);
+        clientCarOwnerCreationButton.setVisible(false);
 
         clientCarOwnerCreationButton.addActionListener(new ActionListener() {
             @Override
@@ -373,7 +393,46 @@ public class Main {
         });
 
         createAccountPanel.add(currentSelectionButton);
-        
+
+        JobSubmitterAccountRadioButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                carModelCreateLabel.setVisible(false);
+                carModelCreateTextField.setVisible(false);
+                carMakeCreateTextField.setVisible(false);
+                carMakeCreateLabel.setVisible(false);
+                carYearCreateLabel.setVisible(false);
+                carYearCreateTextField.setVisible(false);
+                carVinCreateLabel.setVisible(false);
+                carVinCreateTextField.setVisible(false);
+                carPlateNumberCreateLabel.setVisible(false);
+                carPlateNumberCreateTextField.setVisible(false);
+                carTypeCreateLabel.setVisible(false);
+                carTypeCreateTextField.setVisible(false);
+                clientCarOwnerCreationButton.setVisible(false);
+                clientJobSubmitterCreationButton.setVisible(true);
+            }
+        });
+
+        CarOwnerAccountRadioButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                carModelCreateLabel.setVisible(true);
+                carModelCreateTextField.setVisible(true);
+                carMakeCreateTextField.setVisible(true);
+                carMakeCreateLabel.setVisible(true);
+                carYearCreateLabel.setVisible(true);
+                carYearCreateTextField.setVisible(true);
+                carVinCreateLabel.setVisible(true);
+                carVinCreateTextField.setVisible(true);
+                carPlateNumberCreateLabel.setVisible(true);
+                carPlateNumberCreateTextField.setVisible(true);
+                carTypeCreateLabel.setVisible(true);
+                carTypeCreateTextField.setVisible(true);
+                clientCarOwnerCreationButton.setVisible(true);
+                clientJobSubmitterCreationButton.setVisible(false);
+            }
+        });
 
         // Home page
         JPanel homePagePanel = new JPanel(new GridLayout(5,1));
