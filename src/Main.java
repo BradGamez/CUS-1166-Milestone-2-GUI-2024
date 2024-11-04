@@ -34,7 +34,7 @@ public class Main {
         informationInputJobSubmitterPanel.add(clientIDLabel);
         informationInputJobSubmitterPanel.add(clientIDTextField);
 
-        JLabel jobDurationLabel = new JLabel("Job Duration: ");
+        JLabel jobDurationLabel = new JLabel("Job Duration (hrs): ");
         JTextField jobDurationTextField = new JTextField(30);
 
         informationInputJobSubmitterPanel.add(jobDurationLabel);
