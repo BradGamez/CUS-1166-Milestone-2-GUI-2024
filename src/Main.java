@@ -124,7 +124,7 @@ public class Main {
         informationInputCarOwnerPanel.add(vinLabel);
         informationInputCarOwnerPanel.add(vinTextField);
 
-        JLabel residencyLabel = new JLabel("Residency Time: ");
+        JLabel residencyLabel = new JLabel("Residency Time (hrs): ");
         JTextField residencyTextField = new JTextField(30);
 
         informationInputCarOwnerPanel.add(residencyLabel);
@@ -149,7 +149,7 @@ public class Main {
                 try(FileWriter writer = new FileWriter("car_owner_data.txt",true)){
                     writer.write("Owner ID: " + ownerID + "\n");
                     writer.write("Vin Info: " + vinInfo + "\n");
-                    writer.write("Residency Time: " + residencyTime + "\n");
+                    writer.write("Residency Time (hrs): " + residencyTime + "\n");
                     writer.write("Timestamp " + timestamp + "\n");
                 }
                 catch(IOException ex) {
