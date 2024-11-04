@@ -40,7 +40,7 @@ public class Main {
         informationInputJobSubmitterPanel.add(jobDurationLabel);
         informationInputJobSubmitterPanel.add(jobDurationTextField );
 
-        JLabel jobDeadlineLabel = new JLabel("Job Deadline: ");
+        JLabel jobDeadlineLabel = new JLabel("Job Deadline (hrs): ");
         JTextField jobDeadlineTextField = new JTextField(30);
 
         informationInputJobSubmitterPanel.add(jobDeadlineLabel);
@@ -69,8 +69,8 @@ public class Main {
 
                 try(FileWriter writer = new FileWriter("job_submitter_data.txt", true)){
                     writer.write("Client ID: " + clientID + "\n");
-                    writer.write("Job Duration: " + jobDuration + "\n");
-                    writer.write("Job Deadline: " + jobDeadline + "\n");
+                    writer.write("Job Duration (hrs): " + jobDuration + "\n");
+                    writer.write("Job Deadline (hrs): " + jobDeadline + "\n");
                     writer.write("Timestamp " + timestamp + "\n");
                 }
                 catch(IOException ex) {
