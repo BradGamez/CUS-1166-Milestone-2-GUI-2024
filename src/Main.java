@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class Main {
@@ -539,6 +540,30 @@ public class Main {
             public void actionPerformed(ActionEvent e) {
                 clientProfilePanel.setVisible(false);
                 informationInputJobSubmitterPanel.setVisible(true);
+            }
+        });
+        
+        //Calculate Job Completion Times
+        JButton calculateCompletionButton = new JButton("Calculate Job Completion Time");
+        informationInputJobSubmitterPanel.add(calculateCompletionButton);
+
+        calculateCompletionButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                List<Integer> completionTimes = new ArrayList<>();
+                int totalDuration = 0;
+
+                //Calculate the completion time for each job in FIFO order
+                for (int duration : jobDurations) {
+                    totalDuration += duration;
+                    completionTimes.add(totalDuration);
+                }
+
+                //Format and display the completion times
+                String message = "Job Completion Times (hrs): " + completionTimes.stream()
+                    .map(String::valueOf)
+                    .collect(Collectors.joining(", "));
+                JOptionPane.showMessageDialog(frame, message);
             }
         });
         
