@@ -83,7 +83,7 @@ public class Main {
                 }
 
                 //Store submission in list
-                jobSubmissions.add("Client ID: " + clientID + ", Job Duration: " + jobDuration + ", Job Deadline: " + jobDeadline + ", Timestamp: " + timestamp);
+                jobSubmissions.add("Client ID: " + clientID + ", Job Duration (hrs): " + jobDuration + ", Job Deadline (hrs): " + jobDeadline + ", Timestamp: " + timestamp);
 
 
                 clientIDTextField.setText("");
@@ -184,8 +184,49 @@ public class Main {
         //Back Button
         JButton backButton = new JButton("Back");
 
-        // log in panel
+        //cloud controller panel
+        JPanel cloudControllerPanel = new JPanel(new GridLayout(4,1));
+        cloudControllerPanel.setVisible(false);
 
+        //Calculate Job Completion Times
+        JButton calculateCompletionButton = new JButton("Calculate Job Completion Time");
+        cloudControllerPanel.add(calculateCompletionButton);
+
+        calculateCompletionButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                List<Integer> completionTimes = new ArrayList<>();
+                int totalDuration = 0;
+
+                //Calculate the completion time for each job in FIFO order
+                for (int duration : jobDurations) {
+                    totalDuration += duration;
+                    completionTimes.add(totalDuration);
+                }
+
+                //Format and display the completion times
+                String message = "Job Completion Times (hrs): " + completionTimes.stream()
+                        .map(String::valueOf)
+                        .collect(Collectors.joining(", "));
+                JOptionPane.showMessageDialog(frame, message);
+            }
+        });
+
+        // Calculate Total Job Duration
+        JButton calculateButton = new JButton("Total Job Duration");
+        cloudControllerPanel.add(calculateButton);
+
+        calculateButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int totalDuration = jobDurations.stream().mapToInt(Integer::intValue).sum();
+                //Convert totalDuration to hours and format the message
+                String message = String.format("Total Job Duration: %d hr%s", totalDuration, totalDuration == 1 ? "" : "s");
+                JOptionPane.showMessageDialog(frame, message);
+            }
+        });
+
+        // log in panel
         JPanel logInPanel = new JPanel(new GridLayout(4, 2));
 
         JLabel currentSelectionButton = new JLabel("");
@@ -231,22 +272,14 @@ public class Main {
                         currentSelectionButton.setText("Job Submitter");
                         logInPanel.setVisible(false);
                         informationInputJobSubmitterPanel.setVisible(true);
-                        userArrayPosition[0] = i;
-                        System.out.println(clientArray);
-                        System.out.println(userArrayPosition[0]);
                     }
                 }
             }
         });
-        
-        
 
         //car owner login
-
         JButton clientCarOwnerLoginButton = new JButton("Car Owner Login");
         logInPanel.add(clientCarOwnerLoginButton);
-        
-        
 
         clientCarOwnerLoginButton.addActionListener(new ActionListener() {
             @Override
@@ -265,6 +298,23 @@ public class Main {
             }
         });
 
+        //cloud controller log in
+        JButton clientCloudControllerLoginButton = new JButton("Cloud Controller Login");
+        logInPanel.add(clientCloudControllerLoginButton);
+
+        clientCloudControllerLoginButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println(currentSelectionButton.getText());
+                String username = userTextField.getText();
+                String password = passwordTextField.getText();
+                if(username.equals("user") && password.equals("password")){
+                    currentSelectionButton.setText("Cloud Controller");
+                    cloudControllerPanel.setVisible(true);
+                    logInPanel.setVisible(false);
+                }
+            }
+        });
 
         // create account
         JPanel createAccountPanel = new JPanel(new GridLayout(13,2));
@@ -543,44 +593,6 @@ public class Main {
             }
         });
         
-        //Calculate Job Completion Times
-        JButton calculateCompletionButton = new JButton("Calculate Job Completion Time");
-        informationInputJobSubmitterPanel.add(calculateCompletionButton);
-
-        calculateCompletionButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                List<Integer> completionTimes = new ArrayList<>();
-                int totalDuration = 0;
-
-                //Calculate the completion time for each job in FIFO order
-                for (int duration : jobDurations) {
-                    totalDuration += duration;
-                    completionTimes.add(totalDuration);
-                }
-
-                //Format and display the completion times
-                String message = "Job Completion Times (hrs): " + completionTimes.stream()
-                    .map(String::valueOf)
-                    .collect(Collectors.joining(", "));
-                JOptionPane.showMessageDialog(frame, message);
-            }
-        });
-        
-        // Calculate Total Job Duration
-        JButton calculateButton = new JButton("Total Job Duration");
-        informationInputJobSubmitterPanel.add(calculateButton);
-        
-        calculateButton.addActionListener(new ActionListener() {
-        	@Override
-        	public void actionPerformed(ActionEvent e) {
-        		int totalDuration = jobDurations.stream().mapToInt(Integer::intValue).sum();      		
-        		//Convert totalDuration to hours and format the message
-        		String message = String.format("Total Job Duration: %d hr%s", totalDuration, totalDuration == 1 ? "" : "s"); 
-        		JOptionPane.showMessageDialog(frame, message);
-        	}
-        });
-        
         
         //car owner profile page
         JPanel ownerProfilePanel = new JPanel();
@@ -649,7 +661,6 @@ public class Main {
         //job submitter log out button
         JButton jobSubmitterLogoutButton = new JButton("Log Out");
         informationInputJobSubmitterPanel.add(jobSubmitterLogoutButton);
-        informationInputJobSubmitterPanel.add(calculateButton);
 
         jobSubmitterLogoutButton.addActionListener(new ActionListener() {
             @Override
@@ -672,7 +683,19 @@ public class Main {
                 currentSelectionButton.setText("");
             }
         });
-        
+
+        //cloud controller log out
+        JButton cloudControllerLogoutButton = new JButton("Log Out");
+        cloudControllerPanel.add(cloudControllerLogoutButton);
+
+        cloudControllerLogoutButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                homePagePanel.setVisible(true);
+                cloudControllerPanel.setVisible(false);
+                currentSelectionButton.setText("");
+            }
+        });
 
         frame.add(logInPanel);
         frame.add(createAccountPanel);
@@ -681,6 +704,7 @@ public class Main {
         frame.add(informationInputCarOwnerPanel);
         frame.add(clientProfilePanel);
         frame.add(ownerProfilePanel);
+        frame.add(cloudControllerPanel);
 
         frame.setVisible(true);
 
