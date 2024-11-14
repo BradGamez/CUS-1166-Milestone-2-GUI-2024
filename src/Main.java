@@ -2,12 +2,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Scanner;
 import java.util.stream.Collectors;
 
 
@@ -22,7 +23,7 @@ public class Main {
         frame.setLayout(new GridBagLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-       List<Integer> jobDurations = new ArrayList<>(); 
+       List<Integer> jobDurations = new ArrayList<>();
 
         // Job Submitter Panel Setup and Information
 
@@ -90,6 +91,25 @@ public class Main {
                 jobDurationTextField.setText("");
                 jobDeadlineTextField.setText("");
 
+                //send to server, client socket
+                try (Socket clientSocket = new Socket("localhost", 8080);
+                     PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+                     BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()))) {
+
+                    String inputLine, outputLine;
+                    System.out.println("Connected to server");
+                    outputLine = "Client ID: " + clientID + ", Job Duration (hrs): " + jobDuration + ", Job Deadline (hrs): " + jobDeadline + ", Timestamp: " + timestamp;
+                    out.println(outputLine);
+                    System.out.println("Job sent");
+
+                    while((inputLine = in.readLine()) != null){
+                        System.out.println(inputLine);
+                    }
+
+                    clientSocket.close();
+                } catch (IOException exd) {
+                    exd.printStackTrace();
+                }
             }
         });
 
