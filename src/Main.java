@@ -92,23 +92,12 @@ public class Main {
                 jobDeadlineTextField.setText("");
 
                 //send to server, client socket
-                try (Socket clientSocket = new Socket("localhost", 8080);
-                     PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-                     BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()))) {
-
-                    String inputLine, outputLine;
-                    System.out.println("Connected to server");
-                    outputLine = "Client ID: " + clientID + ", Job Duration (hrs): " + jobDuration + ", Job Deadline (hrs): " + jobDeadline + ", Timestamp: " + timestamp;
-                    out.println(outputLine);
-                    System.out.println("Job sent");
-
-                    while((inputLine = in.readLine()) != null){
-                        System.out.println(inputLine);
-                    }
-
-                    clientSocket.close();
-                } catch (IOException exd) {
-                    exd.printStackTrace();
+                try {
+                    ClientSocketManager clientConnection = new ClientSocketManager();
+                    clientConnection.write("Client ID: " + clientID + ", Job Duration (hrs): " + jobDuration + ", Job Deadline (hrs): " + jobDeadline + ", Timestamp: " + timestamp);
+                    clientConnection.start();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
                 }
             }
         });

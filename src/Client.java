@@ -12,6 +12,13 @@ public class Client extends Account {
         this.balance = balance;
     }
 
+    public Client(String username, String password, int ID, String fullName, double balance, List<Job> jobsList) {
+        super(username, password, ID);
+        this.fullName = fullName;
+        this.balance = balance;
+        this.jobs = jobsList;
+    }
+
     public String getFullName() {
         return fullName;
     }

@@ -13,6 +13,13 @@ public class Owner extends Account {
         cars.add(car);
     }
 
+    public Owner(String username, String password, int ID, String fullName, double balance, List<Car> carList) {
+        super(username, password, ID);
+        this.fullName = fullName;
+        this.balance = balance;
+        this.cars = carList;
+    }
+
     public String getFullName() {
         return fullName;
     }

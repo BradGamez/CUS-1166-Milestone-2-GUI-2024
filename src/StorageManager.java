@@ -1,13 +1,8 @@
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.sql.Timestamp;
-import java.util.LinkedList;
-import java.util.Scanner;
+import java.io.*;
+import java.sql.*;
+import java.util.*;
 
 public class StorageManager {
-
     public static void setCar(Car car) {
         try {
             File file = new File("./cars/" + car.getVIN() + ".txt");
