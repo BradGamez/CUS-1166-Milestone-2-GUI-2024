@@ -194,7 +194,7 @@ public class Main {
         JButton backButton = new JButton("Back");
 
         //cloud controller panel
-        JPanel cloudControllerPanel = new JPanel(new GridLayout(4,1));
+        JPanel cloudControllerPanel = new JPanel(new GridLayout(7,1));
         cloudControllerPanel.setVisible(false);
 
         //Calculate Job Completion Times
@@ -324,6 +324,149 @@ public class Main {
                 }
             }
         });
+        
+     // Button to view job submissions in Cloud Controller
+        JButton viewJobsButtonCC = new JButton("Accept or Reject Job Submissions");
+        cloudControllerPanel.add(new JLabel());
+        cloudControllerPanel.add(viewJobsButtonCC);
+
+        viewJobsButtonCC.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //Holds job submissions with Accept/Reject buttons
+                JPanel jobPanel = new JPanel();
+                jobPanel.setLayout(new BoxLayout(jobPanel, BoxLayout.Y_AXIS)); 
+                
+                // Loops through the job submission
+                for (int i = 0; i < jobSubmissions.size(); i++) {
+                    final int index = i;  
+                    String job = jobSubmissions.get(i);  
+
+                    
+                    JPanel singleJobPanel = new JPanel();
+                    singleJobPanel.setLayout(new BoxLayout(singleJobPanel, BoxLayout.X_AXIS)); // Layout for job info and buttons
+
+                    // Displays the job information
+                    singleJobPanel.add(new JLabel(job));
+
+                    // Create the Accept and Reject buttons
+                    JButton acceptButton = new JButton("Accept");
+                    JButton rejectButton = new JButton("Reject");
+
+                  
+                    acceptButton.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            // Writes Accepted Jobs to New Text File
+                            String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+                            try (FileWriter writer = new FileWriter("accepted_jobs.txt", true)) {
+                                writer.write("Accepted Job: " + job + "\n");
+                                writer.write("Timestamp: " + timestamp + "\n");
+                                writer.write("---------------------------\n");
+                            } catch (IOException ex) {
+                                ex.printStackTrace();
+                            }
+                            
+                            JOptionPane.showMessageDialog(frame, "Job Accepted: " + job, "Job Status", JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    });
+
+                    
+                    rejectButton.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            // Removes Rejected job from the Job Submission List
+                        	jobDurations.remove(index);
+                            jobSubmissions.remove(index);
+                            JOptionPane.showMessageDialog(frame, "Job has been rejected: " + job, "Job Status", JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    });
+
+                  
+                    singleJobPanel.add(acceptButton);
+                    singleJobPanel.add(rejectButton);
+
+                    
+                    jobPanel.add(singleJobPanel);
+                }
+
+                
+                JOptionPane.showMessageDialog(frame, jobPanel, "Job Submissions", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+        
+        // Button to view job submissions in Cloud Controller
+        JButton viewCarsButtonCC = new JButton("Accept or Reject Car Submissions");
+        cloudControllerPanel.add(new JLabel());
+        cloudControllerPanel.add(viewCarsButtonCC);
+
+        viewCarsButtonCC.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //Holds car submissions with Accept/Reject buttons
+                JPanel carPanel = new JPanel();
+                carPanel.setLayout(new BoxLayout(carPanel, BoxLayout.Y_AXIS)); 
+                
+                // Loops through the car submission
+                for (int i = 0; i < carOwnerSubmissions.size(); i++) {
+                    final int index = i;  
+                    String car = carOwnerSubmissions.get(i);  
+
+                    
+                    JPanel singleCarPanel = new JPanel();
+                    singleCarPanel.setLayout(new BoxLayout(singleCarPanel, BoxLayout.X_AXIS)); 
+
+                    // Displays the car information
+                    singleCarPanel.add(new JLabel(car));
+
+                    // Create the Accept and Reject buttons
+                    JButton acceptButton = new JButton("Accept");
+                    JButton rejectButton = new JButton("Reject");
+
+                  
+                    acceptButton.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            // Writes Accepted Cars to New Text File
+                            String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+                            try (FileWriter writer = new FileWriter("accepted_cars.txt", true)) {
+                                writer.write("Accepted Car: " + car + "\n");
+                                writer.write("Timestamp: " + timestamp + "\n");
+                                writer.write("---------------------------\n");
+                            } catch (IOException ex) {
+                                ex.printStackTrace();
+                            }
+                            
+                            JOptionPane.showMessageDialog(frame, "Car Accepted: " + car, "Car Status", JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    });
+
+                    
+                    rejectButton.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            // Removes Rejected cars from the Car Submission List
+                        	carOwnerSubmissions.remove(index);
+                            JOptionPane.showMessageDialog(frame, "Car has been rejected: " + car, "Car Status", JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    });
+
+                  
+                    singleCarPanel.add(acceptButton);
+                    singleCarPanel.add(rejectButton);
+
+                    
+                    carPanel.add(singleCarPanel);
+                }
+
+                
+                JOptionPane.showMessageDialog(frame, carPanel, "Job Submissions", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+
+
+
+
 
         // create account
         JPanel createAccountPanel = new JPanel(new GridLayout(13,2));
