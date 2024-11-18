@@ -22,8 +22,9 @@ public class Main {
         frame.setSize(480, 600);
         frame.setLayout(new GridBagLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-       List<Integer> jobDurations = new ArrayList<>();
+
+        List<Integer> clientIDs = new ArrayList<>();
+        List<Integer> jobDurations = new ArrayList<>();
 
         // Job Submitter Panel Setup and Information
 
@@ -65,6 +66,9 @@ public class Main {
                 String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
                 
                 try {
+                    int clientIDInt = Integer.parseInt(clientID);
+                    clientIDs.add(clientIDInt);
+
                 	int jobDurationInt = Integer.parseInt(jobDuration);
                 	jobDurations.add(jobDurationInt);
                
@@ -214,7 +218,8 @@ public class Main {
                 }
 
                 //Format and display the completion times
-                String message = "Job Completion Times (hrs): " + completionTimes.stream()
+                String message = "Client ID(s): " + clientIDs.stream().map(String::valueOf).collect(Collectors.joining(", ")) + "\n" +
+                        "Job Completion Times (hrs): " + completionTimes.stream()
                         .map(String::valueOf)
                         .collect(Collectors.joining(", "));
                 JOptionPane.showMessageDialog(frame, message);
@@ -230,7 +235,8 @@ public class Main {
             public void actionPerformed(ActionEvent e) {
                 int totalDuration = jobDurations.stream().mapToInt(Integer::intValue).sum();
                 //Convert totalDuration to hours and format the message
-                String message = String.format("Total Job Duration: %d hr%s", totalDuration, totalDuration == 1 ? "" : "s");
+                String message = String.format("Client ID(s): " + clientIDs.stream().map(String::valueOf).collect(Collectors.joining(", ")) + "\n" +
+                        "Total Job Duration: %d hr%s", totalDuration, totalDuration == 1 ? "" : "s");
                 JOptionPane.showMessageDialog(frame, message);
             }
         });
@@ -395,7 +401,7 @@ public class Main {
             }
         });
         
-        // Button to view job submissions in Cloud Controller
+        // Button to view car submissions in Cloud Controller
         JButton viewCarsButtonCC = new JButton("Accept or Reject Car Submissions");
         cloudControllerPanel.add(new JLabel());
         cloudControllerPanel.add(viewCarsButtonCC);
