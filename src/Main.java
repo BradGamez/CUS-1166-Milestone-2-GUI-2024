@@ -1,3 +1,4 @@
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -48,7 +49,11 @@ public class Main {
 
         informationInputJobSubmitterPanel.add(jobDeadlineLabel);
         informationInputJobSubmitterPanel.add(jobDeadlineTextField);
-
+        
+        //Temporary list to hold pending job and car submissions
+        List<String> pendingJobSubmissions = new ArrayList<>();
+        List<String> pendingCarOwnerSubmissions = new ArrayList<>();
+        
         // Job Submission Button
 
         JButton submitButton = new JButton("Submit");
@@ -56,7 +61,7 @@ public class Main {
         informationInputJobSubmitterPanel.add(submitButton);
 
 
-        submitButton.addActionListener(new ActionListener(){
+        submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String clientID = clientIDTextField.getText();
@@ -64,44 +69,25 @@ public class Main {
                 String jobDeadline = jobDeadlineTextField.getText();
 
                 String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-                
+
                 try {
                     int clientIDInt = Integer.parseInt(clientID);
                     clientIDs.add(clientIDInt);
 
-                	int jobDurationInt = Integer.parseInt(jobDuration);
-                	jobDurations.add(jobDurationInt);
-               
+                    int jobDurationInt = Integer.parseInt(jobDuration);
+                    jobDurations.add(jobDurationInt);
 
-                try(FileWriter writer = new FileWriter("job_submitter_data.txt", true)){
-                    writer.write("Client ID: " + clientID + "\n");
-                    writer.write("Job Duration (hrs): " + jobDuration + "\n");
-                    writer.write("Job Deadline (hrs): " + jobDeadline + "\n");
-                    writer.write("Timestamp " + timestamp + "\n");
-                }
-                catch(IOException ex) {
-                    ex.printStackTrace();
-                }
-                
+                    // Create a job submission string and add it to the temporary jobSubmissions list
+                    String jobSubmission = "Client ID: " + clientID + ", Job Duration (hrs): " + jobDuration + ", Job Deadline (hrs): " + jobDeadline + ", Timestamp: " + timestamp;
+                    jobSubmissions.add(jobSubmission);
+
+                    // Clear the input fields after submission
+                    clientIDTextField.setText("");
+                    jobDurationTextField.setText("");
+                    jobDeadlineTextField.setText("");
+
                 } catch (NumberFormatException ex) {
                     JOptionPane.showMessageDialog(null, "Please enter a valid number for job duration.");
-                }
-
-                //Store submission in list
-                jobSubmissions.add("Client ID: " + clientID + ", Job Duration (hrs): " + jobDuration + ", Job Deadline (hrs): " + jobDeadline + ", Timestamp: " + timestamp);
-
-
-                clientIDTextField.setText("");
-                jobDurationTextField.setText("");
-                jobDeadlineTextField.setText("");
-
-                //send to server, client socket
-                try {
-                    ClientSocketManager clientConnection = new ClientSocketManager();
-                    clientConnection.write("Client ID: " + clientID + ", Job Duration (hrs): " + jobDuration + ", Job Deadline (hrs): " + jobDeadline + ", Timestamp: " + timestamp);
-                    clientConnection.start();
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
                 }
             }
         });
@@ -114,7 +100,12 @@ public class Main {
         viewJobsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(frame, String.join("\n", jobSubmissions), "Job Submissions", JOptionPane.INFORMATION_MESSAGE);
+                // Show job submissions in a dialog
+                if (jobSubmissions.isEmpty()) {
+                    JOptionPane.showMessageDialog(frame, "No job submissions.", "Job Submissions", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(frame, String.join("\n", jobSubmissions), "Job Submissions", JOptionPane.INFORMATION_MESSAGE);
+                }
             }
         });
 
@@ -151,7 +142,7 @@ public class Main {
         informationInputCarOwnerPanel.add(carOwnerSubmitButton);
 
 
-        carOwnerSubmitButton.addActionListener(new ActionListener(){
+        carOwnerSubmitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String ownerID = ownerIDTextField.getText();
@@ -160,24 +151,15 @@ public class Main {
 
                 String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 
-                try(FileWriter writer = new FileWriter("car_owner_data.txt",true)){
-                    writer.write("Owner ID: " + ownerID + "\n");
-                    writer.write("Vin Info: " + vinInfo + "\n");
-                    writer.write("Residency Time (hrs): " + residencyTime + "\n");
-                    writer.write("Timestamp " + timestamp + "\n");
-                }
-                catch(IOException ex) {
-                    ex.printStackTrace();
-                }
+                // Create a car submission string and add it to the temporary carOwnerSubmissions list
+                String carSubmission = "Owner ID: " + ownerID + ", VIN Info: " + vinInfo + ", Residency Time (hrs): " + residencyTime + ", Timestamp: " + timestamp;
+                carOwnerSubmissions.add(carSubmission);
 
-                //Store submission in list
-                carOwnerSubmissions.add("Owner ID: " + ownerID + ", VIN Info: " + vinInfo + ", Residency Time: " + residencyTime + ", Timestamp: " + timestamp);
-
+                // Clear the input fields after submission
                 ownerIDTextField.setText("");
                 vinTextField.setText("");
                 residencyTextField.setText("");
             }
-
         });
 
         //Button to view car owner submissions
@@ -188,10 +170,13 @@ public class Main {
         viewOwnersButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(frame, String.join("\n", carOwnerSubmissions), "Car Owner Submissions", JOptionPane.INFORMATION_MESSAGE);
+                if (carOwnerSubmissions.isEmpty()) {
+                    JOptionPane.showMessageDialog(frame, "No car owner submissions.", "Car Owner Submissions", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(frame, String.join("\n", carOwnerSubmissions), "Car Owner Submissions", JOptionPane.INFORMATION_MESSAGE);
+                }
             }
         });
-
         informationInputCarOwnerPanel.setVisible(false);
         
         //Back Button
@@ -336,142 +321,129 @@ public class Main {
         cloudControllerPanel.add(new JLabel());
         cloudControllerPanel.add(viewJobsButtonCC);
 
+     // Accept or Reject Job Submissions
         viewJobsButtonCC.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //Holds job submissions with Accept/Reject buttons
                 JPanel jobPanel = new JPanel();
                 jobPanel.setLayout(new BoxLayout(jobPanel, BoxLayout.Y_AXIS)); 
-                
-                // Loops through the job submission
+
+                // Loops through the job submissions
                 for (int i = 0; i < jobSubmissions.size(); i++) {
                     final int index = i;  
                     String job = jobSubmissions.get(i);  
 
-                    
                     JPanel singleJobPanel = new JPanel();
                     singleJobPanel.setLayout(new BoxLayout(singleJobPanel, BoxLayout.X_AXIS)); // Layout for job info and buttons
 
-                    // Displays the job information
                     singleJobPanel.add(new JLabel(job));
 
-                    // Create the Accept and Reject buttons
                     JButton acceptButton = new JButton("Accept");
                     JButton rejectButton = new JButton("Reject");
 
-                  
+                    // Accept Button Action
                     acceptButton.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                            // Writes Accepted Jobs to New Text File
+                            // Write the accepted job to the file
                             String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-                            try (FileWriter writer = new FileWriter("accepted_jobs.txt", true)) {
-                                writer.write("Accepted Job: " + job + "\n");
+                            try (FileWriter writer = new FileWriter("job_submitter_data.txt", true)) {
+                                writer.write("Job: " + job + "\n");
                                 writer.write("Timestamp: " + timestamp + "\n");
                                 writer.write("---------------------------\n");
                             } catch (IOException ex) {
                                 ex.printStackTrace();
                             }
-                            
+
+                            // Remove the accepted job from the list
+                            jobSubmissions.remove(index);
+
+                            // Show acceptance message
                             JOptionPane.showMessageDialog(frame, "Job Accepted: " + job, "Job Status", JOptionPane.INFORMATION_MESSAGE);
                         }
                     });
 
-                    
+                    // Reject Button Action
                     rejectButton.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                            // Removes Rejected job from the Job Submission List
-                        	jobDurations.remove(index);
+                            // Remove the rejected job from the list
                             jobSubmissions.remove(index);
-                            JOptionPane.showMessageDialog(frame, "Job has been rejected: " + job, "Job Status", JOptionPane.INFORMATION_MESSAGE);
+                            JOptionPane.showMessageDialog(frame, "Job Rejected: " + job, "Job Status", JOptionPane.INFORMATION_MESSAGE);
                         }
                     });
 
-                  
                     singleJobPanel.add(acceptButton);
                     singleJobPanel.add(rejectButton);
 
-                    
                     jobPanel.add(singleJobPanel);
                 }
 
-                
                 JOptionPane.showMessageDialog(frame, jobPanel, "Job Submissions", JOptionPane.INFORMATION_MESSAGE);
             }
         });
-        
+                    
         // Button to view car submissions in Cloud Controller
         JButton viewCarsButtonCC = new JButton("Accept or Reject Car Submissions");
         cloudControllerPanel.add(new JLabel());
         cloudControllerPanel.add(viewCarsButtonCC);
 
+    	// Accept or Reject Car Submissions
         viewCarsButtonCC.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //Holds car submissions with Accept/Reject buttons
                 JPanel carPanel = new JPanel();
                 carPanel.setLayout(new BoxLayout(carPanel, BoxLayout.Y_AXIS)); 
-                
-                // Loops through the car submission
+
+                // Loops through the car owner submissions
                 for (int i = 0; i < carOwnerSubmissions.size(); i++) {
                     final int index = i;  
                     String car = carOwnerSubmissions.get(i);  
 
-                    
                     JPanel singleCarPanel = new JPanel();
                     singleCarPanel.setLayout(new BoxLayout(singleCarPanel, BoxLayout.X_AXIS)); 
 
-                    // Displays the car information
                     singleCarPanel.add(new JLabel(car));
 
-                    // Create the Accept and Reject buttons
                     JButton acceptButton = new JButton("Accept");
                     JButton rejectButton = new JButton("Reject");
 
-                  
                     acceptButton.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                            // Writes Accepted Cars to New Text File
+                            // Write the accepted car to the file
                             String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-                            try (FileWriter writer = new FileWriter("accepted_cars.txt", true)) {
-                                writer.write("Accepted Car: " + car + "\n");
+                            try (FileWriter writer = new FileWriter("car_owner_data.txt", true)) {
+                                writer.write("Car: " + car + "\n");
                                 writer.write("Timestamp: " + timestamp + "\n");
                                 writer.write("---------------------------\n");
                             } catch (IOException ex) {
                                 ex.printStackTrace();
                             }
-                            
+
+                            // Remove the accepted car from the list
+                            carOwnerSubmissions.remove(index);
                             JOptionPane.showMessageDialog(frame, "Car Accepted: " + car, "Car Status", JOptionPane.INFORMATION_MESSAGE);
                         }
                     });
 
-                    
                     rejectButton.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                            // Removes Rejected cars from the Car Submission List
-                        	carOwnerSubmissions.remove(index);
-                            JOptionPane.showMessageDialog(frame, "Car has been rejected: " + car, "Car Status", JOptionPane.INFORMATION_MESSAGE);
+                            // Remove the rejected car from the list
+                            carOwnerSubmissions.remove(index);
+                            JOptionPane.showMessageDialog(frame, "Car Rejected: " + car, "Car Status", JOptionPane.INFORMATION_MESSAGE);
                         }
                     });
 
-                  
                     singleCarPanel.add(acceptButton);
                     singleCarPanel.add(rejectButton);
-
-                    
                     carPanel.add(singleCarPanel);
                 }
 
-                
-                JOptionPane.showMessageDialog(frame, carPanel, "Job Submissions", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(frame, carPanel, "Car Owner Submissions", JOptionPane.INFORMATION_MESSAGE);
             }
         });
-
-
-
 
 
         // create account
@@ -869,3 +841,4 @@ public class Main {
         System.out.println("Hello world!");
     }
 }
+     
