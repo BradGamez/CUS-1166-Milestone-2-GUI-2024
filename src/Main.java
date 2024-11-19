@@ -1,4 +1,3 @@
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -355,8 +354,7 @@ public class Main {
                             // Write the accepted job to the file
                             String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
                             try (FileWriter writer = new FileWriter("job_submitter_data.txt", true)) {
-                                writer.write("Job: " + job + "\n");
-                                writer.write("Timestamp: " + timestamp + "\n");
+                                writer.write(job + "\n");
                                 writer.write("---------------------------\n");
                             } catch (IOException ex) {
                                 ex.printStackTrace();
@@ -421,8 +419,7 @@ public class Main {
                             // Write the accepted car to the file
                             String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
                             try (FileWriter writer = new FileWriter("car_owner_data.txt", true)) {
-                                writer.write("Car: " + car + "\n");
-                                writer.write("Timestamp: " + timestamp + "\n");
+                                writer.write(car + "\n");
                                 writer.write("---------------------------\n");
                             } catch (IOException ex) {
                                 ex.printStackTrace();
