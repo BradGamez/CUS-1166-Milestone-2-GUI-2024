@@ -50,10 +50,7 @@ public class Main {
         informationInputJobSubmitterPanel.add(jobDeadlineLabel);
         informationInputJobSubmitterPanel.add(jobDeadlineTextField);
         
-        //Temporary list to hold pending job and car submissions
-        List<String> pendingJobSubmissions = new ArrayList<>();
-        List<String> pendingCarOwnerSubmissions = new ArrayList<>();
-        
+             
         // Job Submission Button
 
         JButton submitButton = new JButton("Submit");
