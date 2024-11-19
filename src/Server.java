@@ -17,9 +17,9 @@ public class Server {
                 System.out.println("Client connected");
 
                 String inputLine;
-                while ((inputLine = in.readLine()) != null) {
+                while (in.ready() && (inputLine = in.readLine()) != null) {
                     System.out.println(inputLine);
-                    out.println("Job received!");
+                    out.println("Submission received!");
                 }
             } catch (IOException e) {
                 e.printStackTrace();

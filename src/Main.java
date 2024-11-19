@@ -4,12 +4,10 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
-import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Scanner;
 import java.util.stream.Collectors;
 
 
@@ -67,24 +65,28 @@ public class Main {
 
                 String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 
+
+                int clientIDInt = Integer.parseInt(clientID);
+                clientIDs.add(clientIDInt);
+
+                int jobDurationInt = Integer.parseInt(jobDuration);
+                jobDurations.add(jobDurationInt);
+
+                // Create a job submission string and add it to the temporary jobSubmissions list
+                String jobSubmission = "Client ID: " + clientID + ", Job Duration (hrs): " + jobDuration + ", Job Deadline (hrs): " + jobDeadline + ", Timestamp: " + timestamp;
+                jobSubmissions.add(jobSubmission);
+
+                // Clear the input fields after submission
+                clientIDTextField.setText("");
+                jobDurationTextField.setText("");
+                jobDeadlineTextField.setText("");
+
                 try {
-                    int clientIDInt = Integer.parseInt(clientID);
-                    clientIDs.add(clientIDInt);
-
-                    int jobDurationInt = Integer.parseInt(jobDuration);
-                    jobDurations.add(jobDurationInt);
-
-                    // Create a job submission string and add it to the temporary jobSubmissions list
-                    String jobSubmission = "Client ID: " + clientID + ", Job Duration (hrs): " + jobDuration + ", Job Deadline (hrs): " + jobDeadline + ", Timestamp: " + timestamp;
-                    jobSubmissions.add(jobSubmission);
-
-                    // Clear the input fields after submission
-                    clientIDTextField.setText("");
-                    jobDurationTextField.setText("");
-                    jobDeadlineTextField.setText("");
-
-                } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(null, "Please enter a valid number for job duration.");
+                    ClientSocketManager clientConnection = new ClientSocketManager();
+                    clientConnection.writeJob("Client ID: " + clientID + ", Job Duration (hrs): " + jobDuration + ", Job Deadline (hrs): " + jobDeadline + ", Timestamp: " + timestamp);
+                    clientConnection.start();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
                 }
             }
         });
@@ -156,6 +158,14 @@ public class Main {
                 ownerIDTextField.setText("");
                 vinTextField.setText("");
                 residencyTextField.setText("");
+
+                try {
+                    ClientSocketManager carOwnerConnection = new ClientSocketManager();
+                    carOwnerConnection.writeCar(carSubmission);
+                    carOwnerConnection.start();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 

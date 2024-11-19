@@ -26,9 +26,15 @@ public class ClientSocketManager extends Thread {
         }
     }
 
-    public void write(String text) throws IOException {
+    public void writeJob(String text) throws IOException {
         out.println(text);
 
         System.out.println("Job sent");
+    }
+
+    public void writeCar(String text) throws IOException {
+        out.println(text);
+
+        System.out.println("Car sent");
     }
 }
