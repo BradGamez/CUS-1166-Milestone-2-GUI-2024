@@ -81,7 +81,7 @@ public class Main {
                 jobDeadlineTextField.setText("");
 
                 try {
-                    ClientSocketManager clientConnection = new ClientSocketManager();
+                    ClientSocketManager clientConnection = new ClientSocketManager(jobDurationInt);
                     clientConnection.writeJob("Client ID: " + clientID + ", Job Duration (hrs): " + jobDuration + ", Job Deadline (hrs): " + jobDeadline + ", Timestamp: " + timestamp);
                     clientConnection.start();
                 } catch (IOException ex) {
@@ -159,7 +159,7 @@ public class Main {
                 residencyTextField.setText("");
 
                 try {
-                    ClientSocketManager carOwnerConnection = new ClientSocketManager();
+                    ClientSocketManager carOwnerConnection = new ClientSocketManager(0);
                     carOwnerConnection.writeCar(carSubmission);
                     carOwnerConnection.start();
                 } catch (IOException ex) {
@@ -322,19 +322,19 @@ public class Main {
             }
         });
         
-     // Button to view job submissions in Cloud Controller
+        // Button to view job submissions in Cloud Controller
         JButton viewJobsButtonCC = new JButton("Accept or Reject Job Submissions");
         cloudControllerPanel.add(new JLabel());
         cloudControllerPanel.add(viewJobsButtonCC);
 
-     // Accept or Reject Job Submissions
+     //Accept or Reject Job Submissions
         viewJobsButtonCC.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JPanel jobPanel = new JPanel();
                 jobPanel.setLayout(new BoxLayout(jobPanel, BoxLayout.Y_AXIS)); 
 
-                // Loops through the job submissions
+                //Loops through the job submissions
                 for (int i = 0; i < jobSubmissions.size(); i++) {
                     final int index = i;  
                     String job = jobSubmissions.get(i);  
@@ -347,18 +347,23 @@ public class Main {
                     JButton acceptButton = new JButton("Accept");
                     JButton rejectButton = new JButton("Reject");
 
-                    // Accept Button Action
+                    //Accept Button Action
                     acceptButton.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                            // Write the accepted job to the file
-                            String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+                            //Write the accepted job to the file
                             try (FileWriter writer = new FileWriter("job_submitter_data.txt", true)) {
                                 writer.write(job + "\n");
                                 writer.write("---------------------------\n");
                             } catch (IOException ex) {
                                 ex.printStackTrace();
                             }
+                            
+                            int clientIDInt = extractClientIDFromJob(job);
+                            String message = "Your job was accepted: " + job;
+                            
+                            //Notify the server
+                            Server.notifyClient(clientIDInt, message);
 
                             // Remove the accepted job from the list
                             jobSubmissions.remove(index);
@@ -373,7 +378,12 @@ public class Main {
                     rejectButton.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                            // Remove the rejected job from the list
+                        	int clientIDInt = extractClientIDFromJob(job); 
+                        	String message = "Your job was rejected: " + job;
+                            
+                        	//Notify the server
+                        	Server.notifyClient(clientIDInt,  message);
+                        	// Remove the rejected job from the list
                             jobSubmissions.remove(index);
                             JOptionPane.showMessageDialog(frame, "Job Rejected: " + job, "Job Status", JOptionPane.INFORMATION_MESSAGE);
                             jobPanel.setVisible(false);
@@ -415,6 +425,7 @@ public class Main {
                     JButton acceptButton = new JButton("Accept");
                     JButton rejectButton = new JButton("Reject");
 
+                    //Accept button action
                     acceptButton.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
@@ -426,6 +437,12 @@ public class Main {
                             } catch (IOException ex) {
                                 ex.printStackTrace();
                             }
+                            
+                            int ownerIDInt = extractOwnerIDFromCar(car);
+                            String message = "Your car submission was accepted: " + car;
+                            
+                            //Notify the server
+                            Server.notifyClient(ownerIDInt, message);
 
                             // Remove the accepted car from the list
                             carOwnerSubmissions.remove(index);
@@ -433,10 +450,17 @@ public class Main {
                             carPanel.setVisible(false);
                         }
                     });
-
+                    
+                    //Reject button action
                     rejectButton.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
+                        	int ownerIDInt = extractOwnerIDFromCar(car);
+                        	String message = "Your car submission was rejected: " + car;
+                        	
+                        	//Notify the server
+                            Server.notifyClient(ownerIDInt, message);
+
                             // Remove the rejected car from the list
                             carOwnerSubmissions.remove(index);
                             JOptionPane.showMessageDialog(frame, "Car Rejected: " + car, "Car Status", JOptionPane.INFORMATION_MESSAGE);
@@ -452,8 +476,7 @@ public class Main {
                 JOptionPane.showMessageDialog(frame, carPanel, "Car Owner Submissions", JOptionPane.INFORMATION_MESSAGE);
             }
         });
-
-
+        
         // create account
         JPanel createAccountPanel = new JPanel(new GridLayout(13,2));
         createAccountPanel.setVisible(false);
