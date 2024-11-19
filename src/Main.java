@@ -365,6 +365,7 @@ public class Main {
 
                             // Show acceptance message
                             JOptionPane.showMessageDialog(frame, "Job Accepted: " + job, "Job Status", JOptionPane.INFORMATION_MESSAGE);
+                            jobPanel.setVisible(false);
                         }
                     });
 
@@ -375,6 +376,7 @@ public class Main {
                             // Remove the rejected job from the list
                             jobSubmissions.remove(index);
                             JOptionPane.showMessageDialog(frame, "Job Rejected: " + job, "Job Status", JOptionPane.INFORMATION_MESSAGE);
+                            jobPanel.setVisible(false);
                         }
                     });
 
@@ -428,6 +430,7 @@ public class Main {
                             // Remove the accepted car from the list
                             carOwnerSubmissions.remove(index);
                             JOptionPane.showMessageDialog(frame, "Car Accepted: " + car, "Car Status", JOptionPane.INFORMATION_MESSAGE);
+                            carPanel.setVisible(false);
                         }
                     });
 
@@ -437,6 +440,7 @@ public class Main {
                             // Remove the rejected car from the list
                             carOwnerSubmissions.remove(index);
                             JOptionPane.showMessageDialog(frame, "Car Rejected: " + car, "Car Status", JOptionPane.INFORMATION_MESSAGE);
+                            carPanel.setVisible(false);
                         }
                     });
 
