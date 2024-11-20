@@ -21,7 +21,9 @@ public class Main {
         frame.setLayout(new GridBagLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        List<Integer> tempJobClientIDs = new ArrayList<>();
         List<Integer> jobClientIDs = new ArrayList<>();
+        List<Integer> tempJobDurations = new ArrayList<>();
         List<Integer> jobDurations = new ArrayList<>();
 
         // Job Submitter Panel Setup and Information
@@ -64,12 +66,11 @@ public class Main {
 
                 String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 
-
                 int clientIDInt = Integer.parseInt(clientID);
-                jobClientIDs.add(clientIDInt);
+                tempJobClientIDs.add(clientIDInt);
 
                 int jobDurationInt = Integer.parseInt(jobDuration);
-                jobDurations.add(jobDurationInt);
+                tempJobDurations.add(jobDurationInt);
 
                 // Create a job submission string and add it to the temporary jobSubmissions list
                 String jobSubmission = "Client ID: " + clientID + ", Job Duration (hrs): " + jobDuration + ", Job Deadline (hrs): " + jobDeadline + ", Timestamp: " + timestamp;
@@ -90,8 +91,8 @@ public class Main {
             }
         });
 
-        //Button to view job submissions
-        JButton viewJobsButton = new JButton("View Job Submissions");
+        //Button to view pending job submissions
+        JButton viewJobsButton = new JButton("Pending Job Submissions");
         informationInputJobSubmitterPanel.add(new JLabel());
         informationInputJobSubmitterPanel.add(viewJobsButton);
 
@@ -100,16 +101,19 @@ public class Main {
             public void actionPerformed(ActionEvent e) {
                 // Show job submissions in a dialog
                 if (jobSubmissions.isEmpty()) {
-                    JOptionPane.showMessageDialog(frame, "No job submissions.", "Job Submissions", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, "No pending job submissions.", "Pending Job Submissions", JOptionPane.INFORMATION_MESSAGE);
                 } else {
-                    JOptionPane.showMessageDialog(frame, String.join("\n", jobSubmissions), "Job Submissions", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, String.join("\n", jobSubmissions), "Pending Job Submissions", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
         });
 
+        //button to view accepted job submissions goes here
+
         informationInputJobSubmitterPanel.setVisible(false);
 
         // Car Owner Panel Setup and Information
+        List<Integer> tempCarOwnerIDs = new ArrayList<>();
         List<Integer> carOwnerIDs = new ArrayList<>();
 
         JPanel informationInputCarOwnerPanel = new JPanel();
@@ -151,7 +155,7 @@ public class Main {
                 String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 
                 int ownerIDint = Integer.parseInt(ownerID);
-                carOwnerIDs.add(ownerIDint);
+                tempCarOwnerIDs.add(ownerIDint);
                 // Create a car submission string and add it to the temporary carOwnerSubmissions list
                 String carSubmission = "Owner ID: " + ownerID + ", VIN Info: " + vinInfo + ", Residency Time (hrs): " + residencyTime + ", Timestamp: " + timestamp;
                 carOwnerSubmissions.add(carSubmission);
@@ -172,7 +176,7 @@ public class Main {
         });
 
         //Button to view car owner submissions
-        JButton viewOwnersButton = new JButton("View Car Owner Submissions");
+        JButton viewOwnersButton = new JButton("Pending Car Owner Submissions");
         informationInputCarOwnerPanel.add(new JLabel());
         informationInputCarOwnerPanel.add(viewOwnersButton);
 
@@ -180,9 +184,9 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (carOwnerSubmissions.isEmpty()) {
-                    JOptionPane.showMessageDialog(frame, "No car owner submissions.", "Car Owner Submissions", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, "No pending car owner submissions.", "Pending Car Owner Submissions", JOptionPane.INFORMATION_MESSAGE);
                 } else {
-                    JOptionPane.showMessageDialog(frame, String.join("\n", carOwnerSubmissions), "Car Owner Submissions", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, String.join("\n", carOwnerSubmissions), "Pending Car Owner Submissions", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
         });
@@ -362,8 +366,10 @@ public class Main {
                             } catch (IOException ex) {
                                 ex.printStackTrace();
                             }
-                            
-                            int clientIDInt = jobClientIDs.get(finalI);
+
+                            jobClientIDs.add(tempJobClientIDs.get(finalI));
+                            jobDurations.add(tempJobDurations.get(finalI));
+                            int clientIDInt = tempJobClientIDs.get(finalI);
                             String message = "Your job was accepted: " + job;
                             
                             //Notify the server
@@ -382,7 +388,7 @@ public class Main {
                     rejectButton.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                        	int clientIDInt = jobClientIDs.get(finalI);
+                        	int clientIDInt = tempJobClientIDs.get(finalI);
                         	String message = "Your job was rejected: " + job;
                             
                         	//Notify the server
@@ -443,7 +449,8 @@ public class Main {
                                 ex.printStackTrace();
                             }
                             
-                            int ownerIDInt = carOwnerIDs.get(finalI);
+                            int ownerIDInt = tempCarOwnerIDs.get(finalI);
+                            carOwnerIDs.add(ownerIDInt);
                             String message = "Your car submission was accepted: " + car;
                             
                             //Notify the server
@@ -460,7 +467,7 @@ public class Main {
                     rejectButton.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                        	int ownerIDInt = carOwnerIDs.get(finalI);
+                        	int ownerIDInt = tempCarOwnerIDs.get(finalI);
                         	String message = "Your car submission was rejected: " + car;
                         	
                         	//Notify the server
