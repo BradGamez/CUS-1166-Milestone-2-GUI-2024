@@ -21,7 +21,7 @@ public class Main {
         frame.setLayout(new GridBagLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        List<Integer> clientIDs = new ArrayList<>();
+        List<Integer> jobClientIDs = new ArrayList<>();
         List<Integer> jobDurations = new ArrayList<>();
 
         // Job Submitter Panel Setup and Information
@@ -66,7 +66,7 @@ public class Main {
 
 
                 int clientIDInt = Integer.parseInt(clientID);
-                clientIDs.add(clientIDInt);
+                jobClientIDs.add(clientIDInt);
 
                 int jobDurationInt = Integer.parseInt(jobDuration);
                 jobDurations.add(jobDurationInt);
@@ -110,6 +110,7 @@ public class Main {
         informationInputJobSubmitterPanel.setVisible(false);
 
         // Car Owner Panel Setup and Information
+        List<Integer> carOwnerIDs = new ArrayList<>();
 
         JPanel informationInputCarOwnerPanel = new JPanel();
 
@@ -149,6 +150,8 @@ public class Main {
 
                 String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 
+                int ownerIDint = Integer.parseInt(ownerID);
+                carOwnerIDs.add(ownerIDint);
                 // Create a car submission string and add it to the temporary carOwnerSubmissions list
                 String carSubmission = "Owner ID: " + ownerID + ", VIN Info: " + vinInfo + ", Residency Time (hrs): " + residencyTime + ", Timestamp: " + timestamp;
                 carOwnerSubmissions.add(carSubmission);
@@ -209,7 +212,7 @@ public class Main {
                 }
 
                 //Format and display the completion times
-                String message = "Client ID(s): " + clientIDs.stream().map(String::valueOf).collect(Collectors.joining(", ")) + "\n" +
+                String message = "Client ID(s): " + jobClientIDs.stream().map(String::valueOf).collect(Collectors.joining(", ")) + "\n" +
                         "Job Completion Times (hrs): " + completionTimes.stream()
                         .map(String::valueOf)
                         .collect(Collectors.joining(", "));
@@ -226,7 +229,7 @@ public class Main {
             public void actionPerformed(ActionEvent e) {
                 int totalDuration = jobDurations.stream().mapToInt(Integer::intValue).sum();
                 //Convert totalDuration to hours and format the message
-                String message = String.format("Client ID(s): " + clientIDs.stream().map(String::valueOf).collect(Collectors.joining(", ")) + "\n" +
+                String message = String.format("Client ID(s): " + jobClientIDs.stream().map(String::valueOf).collect(Collectors.joining(", ")) + "\n" +
                         "Total Job Duration: %d hr%s", totalDuration, totalDuration == 1 ? "" : "s");
                 JOptionPane.showMessageDialog(frame, message);
             }
@@ -348,6 +351,7 @@ public class Main {
                     JButton rejectButton = new JButton("Reject");
 
                     //Accept Button Action
+                    int finalI = i;
                     acceptButton.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
@@ -359,7 +363,7 @@ public class Main {
                                 ex.printStackTrace();
                             }
                             
-                            int clientIDInt = extractClientIDFromJob(job);
+                            int clientIDInt = jobClientIDs.get(finalI);
                             String message = "Your job was accepted: " + job;
                             
                             //Notify the server
@@ -378,7 +382,7 @@ public class Main {
                     rejectButton.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                        	int clientIDInt = extractClientIDFromJob(job); 
+                        	int clientIDInt = jobClientIDs.get(finalI);
                         	String message = "Your job was rejected: " + job;
                             
                         	//Notify the server
@@ -426,6 +430,7 @@ public class Main {
                     JButton rejectButton = new JButton("Reject");
 
                     //Accept button action
+                    int finalI = i;
                     acceptButton.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
@@ -438,7 +443,7 @@ public class Main {
                                 ex.printStackTrace();
                             }
                             
-                            int ownerIDInt = extractOwnerIDFromCar(car);
+                            int ownerIDInt = carOwnerIDs.get(finalI);
                             String message = "Your car submission was accepted: " + car;
                             
                             //Notify the server
@@ -455,7 +460,7 @@ public class Main {
                     rejectButton.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                        	int ownerIDInt = extractOwnerIDFromCar(car);
+                        	int ownerIDInt = carOwnerIDs.get(finalI);
                         	String message = "Your car submission was rejected: " + car;
                         	
                         	//Notify the server
