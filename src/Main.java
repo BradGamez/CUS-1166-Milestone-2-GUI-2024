@@ -1,3 +1,4 @@
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -118,10 +119,10 @@ public class Main {
 
         JPanel informationInputCarOwnerPanel = new JPanel();
 
-        informationInputCarOwnerPanel.setLayout(new GridLayout(6, 2));
+        informationInputCarOwnerPanel.setLayout(new GridLayout(5, 1));
 
         JLabel ownerIDLabel = new JLabel("Owner ID: ");
-        JTextField ownerIDTextField = new JTextField(30);
+        JTextField ownerIDTextField = new JTextField(25);
 
         informationInputCarOwnerPanel.add(ownerIDLabel);
         informationInputCarOwnerPanel.add(ownerIDTextField);
@@ -489,6 +490,52 @@ public class Main {
             }
         });
         
+     //Button to view accepted jobs for Job Submitter
+        JButton viewAcceptedJobsButton = new JButton("View Accepted Jobs");
+        informationInputJobSubmitterPanel.add(viewAcceptedJobsButton);
+
+        viewAcceptedJobsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //Read accepted jobs from the job submitter file
+                try (BufferedReader reader = new BufferedReader(new FileReader("job_submitter_data.txt"))) {
+                    String line;
+                    StringBuilder jobsContent = new StringBuilder();
+                    while ((line = reader.readLine()) != null) {
+                        jobsContent.append(line).append("\n");
+                    }
+                    //Show the accepted jobs content in a dialog box
+                    JOptionPane.showMessageDialog(frame, jobsContent.toString(), "Accepted Jobs", JOptionPane.INFORMATION_MESSAGE);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(frame, "Error reading accepted jobs file", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+     //Button to view accepted cars for Car Owner
+        JButton viewAcceptedCarsButton = new JButton("View Accepted Cars");
+        informationInputCarOwnerPanel.add(viewAcceptedCarsButton);
+
+        viewAcceptedCarsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //Read accepted cars from the car owner file
+                try (BufferedReader reader = new BufferedReader(new FileReader("car_owner_data.txt"))) {
+                    String line;
+                    StringBuilder carsContent = new StringBuilder();
+                    while ((line = reader.readLine()) != null) {
+                        carsContent.append(line).append("\n");
+                    }
+                    //Show the accepted cars content in a dialog box
+                    JOptionPane.showMessageDialog(frame, carsContent.toString(), "Accepted Cars", JOptionPane.INFORMATION_MESSAGE);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(frame, "Error reading accepted cars file", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
         // create account
         JPanel createAccountPanel = new JPanel(new GridLayout(13,2));
         createAccountPanel.setVisible(false);
