@@ -109,8 +109,6 @@ public class Main {
             }
         });
 
-        //button to view accepted job submissions goes here
-
         informationInputJobSubmitterPanel.setVisible(false);
 
         // Car Owner Panel Setup and Information
@@ -119,7 +117,7 @@ public class Main {
 
         JPanel informationInputCarOwnerPanel = new JPanel();
 
-        informationInputCarOwnerPanel.setLayout(new GridLayout(5, 1));
+        informationInputCarOwnerPanel.setLayout(new GridLayout(8, 2));
 
         JLabel ownerIDLabel = new JLabel("Owner ID: ");
         JTextField ownerIDTextField = new JTextField(25);
