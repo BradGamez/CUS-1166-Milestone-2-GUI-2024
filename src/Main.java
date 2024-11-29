@@ -22,6 +22,11 @@ public class Main {
         frame.setLayout(new GridBagLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        JFrame cloudFrame = new JFrame("VC Cloud Controller");
+        cloudFrame.setSize(480,600);
+        cloudFrame.setLayout(new GridBagLayout());
+        cloudFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
         List<Integer> tempJobClientIDs = new ArrayList<>();
         List<Integer> jobClientIDs = new ArrayList<>();
         List<Integer> tempJobDurations = new ArrayList<>();
@@ -323,7 +328,7 @@ public class Main {
                 if(username.equals("user") && password.equals("password")){
                     currentSelectionButton.setText("Cloud Controller");
                     cloudControllerPanel.setVisible(true);
-                    logInPanel.setVisible(false);
+                    cloudFrame.setVisible(true);
                 }
             }
         });
@@ -922,9 +927,11 @@ public class Main {
         frame.add(informationInputCarOwnerPanel);
         frame.add(clientProfilePanel);
         frame.add(ownerProfilePanel);
-        frame.add(cloudControllerPanel);
+
+        cloudFrame.add(cloudControllerPanel);
 
         frame.setVisible(true);
+        cloudFrame.setVisible(false);
 
         System.out.println("Hello world!");
     }
