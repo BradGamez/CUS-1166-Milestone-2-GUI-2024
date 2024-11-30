@@ -35,7 +35,7 @@ public class Main {
         // Job Submitter Panel Setup and Information
 
         JPanel informationInputJobSubmitterPanel = new JPanel();
-        informationInputJobSubmitterPanel.setLayout(new GridLayout(8, 2));
+        informationInputJobSubmitterPanel.setLayout(new GridLayout(10, 2));
 
         JLabel clientIDLabel = new JLabel("Client ID: ");
         JTextField clientIDTextField = new JTextField(30);
@@ -122,7 +122,7 @@ public class Main {
 
         JPanel informationInputCarOwnerPanel = new JPanel();
 
-        informationInputCarOwnerPanel.setLayout(new GridLayout(8, 2));
+        informationInputCarOwnerPanel.setLayout(new GridLayout(10, 2));
 
         JLabel ownerIDLabel = new JLabel("Owner ID: ");
         JTextField ownerIDTextField = new JTextField(25);
@@ -200,7 +200,7 @@ public class Main {
         JButton backButton = new JButton("Back");
 
         //cloud controller panel
-        JPanel cloudControllerPanel = new JPanel(new GridLayout(7,1));
+        JPanel cloudControllerPanel = new JPanel(new GridLayout(10,1));
         cloudControllerPanel.setVisible(false);
 
         //Calculate Job Completion Times
@@ -224,7 +224,7 @@ public class Main {
                         "Job Completion Times (hrs): " + completionTimes.stream()
                         .map(String::valueOf)
                         .collect(Collectors.joining(", "));
-                JOptionPane.showMessageDialog(frame, message);
+                JOptionPane.showMessageDialog(cloudFrame, message);
             }
         });
 
@@ -239,15 +239,14 @@ public class Main {
                 //Convert totalDuration to hours and format the message
                 String message = String.format("Client ID(s): " + jobClientIDs.stream().map(String::valueOf).collect(Collectors.joining(", ")) + "\n" +
                         "Total Job Duration: %d hr%s", totalDuration, totalDuration == 1 ? "" : "s");
-                JOptionPane.showMessageDialog(frame, message);
+                JOptionPane.showMessageDialog(cloudFrame, message);
             }
         });
 
         // log in panel
-        JPanel logInPanel = new JPanel(new GridLayout(4, 2));
+        JPanel logInPanel = new JPanel(new GridLayout(4,2));
 
         JLabel currentSelectionButton = new JLabel("");
-        
         
         logInPanel.setVisible(false);
 
@@ -317,7 +316,7 @@ public class Main {
 
         //cloud controller log in
         JButton clientCloudControllerLoginButton = new JButton("Cloud Controller Login");
-        logInPanel.add(clientCloudControllerLoginButton);
+        logInPanel.add(clientCloudControllerLoginButton, BorderLayout.CENTER);
 
         clientCloudControllerLoginButton.addActionListener(new ActionListener() {
             @Override
@@ -378,12 +377,13 @@ public class Main {
                             
                             //Notify the server
                             Server.notifyClient(clientIDInt, message);
+                            JOptionPane.showMessageDialog(frame, job, "Job Accepted", JOptionPane.INFORMATION_MESSAGE);
 
                             // Remove the accepted job from the list
                             jobSubmissions.remove(index);
 
                             // Show acceptance message
-                            JOptionPane.showMessageDialog(frame, "Job Accepted: " + job, "Job Status", JOptionPane.INFORMATION_MESSAGE);
+                            JOptionPane.showMessageDialog(cloudFrame, "Job Accepted: " + job, "Job Status", JOptionPane.INFORMATION_MESSAGE);
                             jobPanel.setVisible(false);
                         }
                     });
@@ -397,9 +397,11 @@ public class Main {
                             
                         	//Notify the server
                         	Server.notifyClient(clientIDInt,  message);
+                            JOptionPane.showMessageDialog(frame, job, "Job Rejected", JOptionPane.INFORMATION_MESSAGE);
+
                         	// Remove the rejected job from the list
                             jobSubmissions.remove(index);
-                            JOptionPane.showMessageDialog(frame, "Job Rejected: " + job, "Job Status", JOptionPane.INFORMATION_MESSAGE);
+                            JOptionPane.showMessageDialog(cloudFrame, "Job Rejected: " + job, "Job Status", JOptionPane.INFORMATION_MESSAGE);
                             jobPanel.setVisible(false);
                         }
                     });
@@ -410,7 +412,7 @@ public class Main {
                     jobPanel.add(singleJobPanel);
                 }
 
-                JOptionPane.showMessageDialog(frame, jobPanel, "Job Submissions", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(cloudFrame, jobPanel, "Job Submissions", JOptionPane.INFORMATION_MESSAGE);
             }
         });
                     
@@ -459,10 +461,11 @@ public class Main {
                             
                             //Notify the server
                             Server.notifyClient(ownerIDInt, message);
+                            JOptionPane.showMessageDialog(frame, message);
 
                             // Remove the accepted car from the list
                             carOwnerSubmissions.remove(index);
-                            JOptionPane.showMessageDialog(frame, "Car Accepted: " + car, "Car Status", JOptionPane.INFORMATION_MESSAGE);
+                            JOptionPane.showMessageDialog(cloudFrame, "Car Accepted: " + car, "Car Status", JOptionPane.INFORMATION_MESSAGE);
                             carPanel.setVisible(false);
                         }
                     });
@@ -476,10 +479,11 @@ public class Main {
                         	
                         	//Notify the server
                             Server.notifyClient(ownerIDInt, message);
+                            JOptionPane.showMessageDialog(frame, message);
 
                             // Remove the rejected car from the list
                             carOwnerSubmissions.remove(index);
-                            JOptionPane.showMessageDialog(frame, "Car Rejected: " + car, "Car Status", JOptionPane.INFORMATION_MESSAGE);
+                            JOptionPane.showMessageDialog(cloudFrame, "Car Rejected: " + car, "Car Status", JOptionPane.INFORMATION_MESSAGE);
                             carPanel.setVisible(false);
                         }
                     });
@@ -489,7 +493,7 @@ public class Main {
                     carPanel.add(singleCarPanel);
                 }
 
-                JOptionPane.showMessageDialog(frame, carPanel, "Car Owner Submissions", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(cloudFrame, carPanel, "Car Owner Submissions", JOptionPane.INFORMATION_MESSAGE);
             }
         });
         
@@ -640,7 +644,7 @@ public class Main {
             }
         });
 
-        //owner create account
+        //car owner create account
         JButton clientCarOwnerCreationButton = new JButton("Car Owner Create Account");
         createAccountPanel.add(clientCarOwnerCreationButton);
         clientCarOwnerCreationButton.setVisible(false);
@@ -711,11 +715,11 @@ public class Main {
         // Home page
         JPanel homePagePanel = new JPanel(new GridLayout(5,1));
 
-        JLabel homePageLabel = new JLabel("Welcome to the Vehicular Cloud Console");
-        JLabel homePageInfoLabel = new JLabel("Connecting Jobs to Cars since 2024");
+        JLabel homePagePanelHeading = new JLabel("Welcome to the Vehicular Cloud Console");
+        JLabel homePagePanelInfo = new JLabel("Connecting Jobs to Cars since 2024");
 
-        homePagePanel.add(homePageLabel);
-        homePagePanel.add(homePageInfoLabel);
+        homePagePanel.add(homePagePanelHeading);
+        homePagePanel.add(homePagePanelInfo);
 
         JButton logInPageButton = new JButton("Log In");
         homePagePanel.add(logInPageButton);
@@ -761,7 +765,7 @@ public class Main {
 
         //client profile page
         JPanel clientProfilePanel = new JPanel();
-        clientProfilePanel.setLayout(new GridLayout(6,2));
+        clientProfilePanel.setLayout(new GridLayout(8,2));
 
         JLabel clientNameLabel = new JLabel("Name: ");
         JLabel clientName = new JLabel(clientArray.get(userArrayPosition[0]).getFullName());
@@ -819,7 +823,7 @@ public class Main {
         
         //car owner profile page
         JPanel ownerProfilePanel = new JPanel();
-        ownerProfilePanel.setLayout(new GridLayout(7,2));
+        ownerProfilePanel.setLayout(new GridLayout(8,2));
 
         JLabel ownerNameLabel = new JLabel("Name: ");
         JLabel ownerName = new JLabel(ownerArray.get(userArrayPosition[0]).getFullName());
@@ -914,8 +918,8 @@ public class Main {
         cloudControllerLogoutButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                homePagePanel.setVisible(true);
                 cloudControllerPanel.setVisible(false);
+                cloudFrame.setVisible(false);
                 currentSelectionButton.setText("");
             }
         });
