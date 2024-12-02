@@ -34,8 +34,13 @@ public class Main {
 
         // Job Submitter Panel Setup and Information
 
+        JLabel jobSubmitterMessageLabel = new JLabel("Welcome Job Submitter");
+       
+        
         JPanel informationInputJobSubmitterPanel = new JPanel();
         informationInputJobSubmitterPanel.setLayout(new GridLayout(10, 2));
+        
+        informationInputJobSubmitterPanel.add(jobSubmitterMessageLabel);
 
         JLabel clientIDLabel = new JLabel("Client ID: ");
         JTextField clientIDTextField = new JTextField(30);
@@ -121,6 +126,8 @@ public class Main {
         List<Integer> carOwnerIDs = new ArrayList<>();
 
         JPanel informationInputCarOwnerPanel = new JPanel();
+        JLabel carOwnerMessageLabel = new JLabel("Welcome Car Owner");
+        informationInputCarOwnerPanel.add(carOwnerMessageLabel);
 
         informationInputCarOwnerPanel.setLayout(new GridLayout(10, 2));
 
@@ -202,6 +209,9 @@ public class Main {
         //cloud controller panel
         JPanel cloudControllerPanel = new JPanel(new GridLayout(10,1));
         cloudControllerPanel.setVisible(false);
+        
+        JLabel cloudControllerMessageLabel = new JLabel("Welcome Cloud Controller");
+        cloudControllerPanel.add(cloudControllerMessageLabel);
 
         //Calculate Job Completion Times
         JButton calculateCompletionButton = new JButton("Calculate Job Completion Time");
@@ -328,6 +338,7 @@ public class Main {
                     currentSelectionButton.setText("Cloud Controller");
                     cloudControllerPanel.setVisible(true);
                     cloudFrame.setVisible(true);
+                    
                 }
             }
         });
@@ -411,10 +422,74 @@ public class Main {
 
                     jobPanel.add(singleJobPanel);
                 }
+                
+             //Mass Acception and Rejection
+                JButton acceptAllJobsButton = new JButton("Accept All");
+                JButton rejectAllJobsButton = new JButton("Reject All");
+
+                // Mass Accept 
+                acceptAllJobsButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        for (int i = 0; i < jobSubmissions.size(); i++) {
+                            String job = jobSubmissions.get(i);
+                            try (FileWriter writer = new FileWriter("job_submitter_data.txt", true)) {
+                                writer.write(job + "\n");
+                                writer.write("---------------------------\n");
+                            } catch (IOException ex) {
+                                ex.printStackTrace();
+                            }
+                            
+                            jobClientIDs.add(tempJobClientIDs.get(i));
+                            jobDurations.add(tempJobDurations.get(i));
+                            
+                            int clientIDInt = tempJobClientIDs.get(i);
+                            String message = "Your job was accepted: " + job;
+
+                            // Notify the server
+                            Server.notifyClient(clientIDInt, message);
+                        }
+
+                        
+                        jobSubmissions.clear();
+                        
+                        JOptionPane.showMessageDialog(cloudFrame, "All jobs have been accepted!", "Mass Accept", JOptionPane.INFORMATION_MESSAGE);
+                        jobPanel.setVisible(false);
+                    }
+                });
+
+                // Mass Reject Action
+                rejectAllJobsButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        for (int i = 0; i < jobSubmissions.size(); i++) {
+                            String job = jobSubmissions.get(i);
+                            int clientIDInt = tempJobClientIDs.get(i);
+                            String message = "Your job was rejected: " + job;
+
+                            // Notify the server
+                            Server.notifyClient(clientIDInt, message);
+                        }
+
+                        
+                        jobSubmissions.clear();
+                        JOptionPane.showMessageDialog(cloudFrame, "All jobs have been rejected!", "Mass Reject", JOptionPane.INFORMATION_MESSAGE);
+                        jobPanel.setVisible(false);
+                    }
+                });
+
+                // Add the mass action buttons to the job panel
+                jobPanel.add(acceptAllJobsButton);
+                jobPanel.add(rejectAllJobsButton);
+
 
                 JOptionPane.showMessageDialog(cloudFrame, jobPanel, "Job Submissions", JOptionPane.INFORMATION_MESSAGE);
             }
+            
+            
         });
+        
+        
                     
         // Button to view car submissions in Cloud Controller
         JButton viewCarsButtonCC = new JButton("Accept or Reject Car Submissions");
@@ -492,6 +567,62 @@ public class Main {
                     singleCarPanel.add(rejectButton);
                     carPanel.add(singleCarPanel);
                 }
+                
+             // Mass Accept/Reject For Cars
+                JButton acceptAllCarsButton = new JButton("Accept All");
+                JButton rejectAllCarsButton = new JButton("Reject All");
+
+                // Mass Accept 
+                acceptAllCarsButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        for (int i = 0; i < carOwnerSubmissions.size(); i++) {
+                            String car = carOwnerSubmissions.get(i);
+                            try (FileWriter writer = new FileWriter("car_owner_data.txt", true)) {
+                                writer.write(car + "\n");
+                                writer.write("---------------------------\n");
+                            } catch (IOException ex) {
+                                ex.printStackTrace();
+                            }
+
+                            int ownerIDInt = tempCarOwnerIDs.get(i);
+                            String message = "Your car submission was accepted: " + car;
+
+                            // Notify the server
+                            Server.notifyClient(ownerIDInt, message);
+                        }
+
+                        
+                        carOwnerSubmissions.clear();
+                        JOptionPane.showMessageDialog(cloudFrame, "All cars have been accepted!", "Mass Accept", JOptionPane.INFORMATION_MESSAGE);
+                        carPanel.setVisible(false);
+                    }
+                });
+
+                // Mass Reject
+                rejectAllCarsButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        for (int i = 0; i < carOwnerSubmissions.size(); i++) {
+                            String car = carOwnerSubmissions.get(i);
+                            int ownerIDInt = tempCarOwnerIDs.get(i);
+                            String message = "Your car submission was rejected: " + car;
+
+                            // Notify the server
+                            Server.notifyClient(ownerIDInt, message);
+                        }
+
+                        
+                        carOwnerSubmissions.clear();
+                        JOptionPane.showMessageDialog(cloudFrame, "All cars have been rejected!", "Mass Reject", JOptionPane.INFORMATION_MESSAGE);
+                        carPanel.setVisible(false);
+                    }
+                });
+
+                
+                carPanel.add(acceptAllCarsButton);
+                carPanel.add(rejectAllCarsButton);
+
 
                 JOptionPane.showMessageDialog(cloudFrame, carPanel, "Car Owner Submissions", JOptionPane.INFORMATION_MESSAGE);
             }
@@ -714,6 +845,7 @@ public class Main {
 
         // Home page
         JPanel homePagePanel = new JPanel(new GridLayout(5,1));
+        
 
         JLabel homePagePanelHeading = new JLabel("Welcome to the Vehicular Cloud Console");
         JLabel homePagePanelInfo = new JLabel("Connecting Jobs to Cars since 2024");
@@ -723,6 +855,9 @@ public class Main {
 
         JButton logInPageButton = new JButton("Log In");
         homePagePanel.add(logInPageButton);
+        
+       
+        
 
         logInPageButton.addActionListener(new ActionListener() {
             @Override
