@@ -1,4 +1,3 @@
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -27,20 +26,22 @@ public class Main {
         cloudFrame.setLayout(new GridBagLayout());
         cloudFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        
+        // Job Submitter Panel Setup and Information
         List<Integer> tempJobClientIDs = new ArrayList<>();
         List<Integer> jobClientIDs = new ArrayList<>();
         List<Integer> tempJobDurations = new ArrayList<>();
         List<Integer> jobDurations = new ArrayList<>();
 
-        // Job Submitter Panel Setup and Information
-
-        JLabel jobSubmitterMessageLabel = new JLabel("Welcome Job Submitter");
-       
+        JLabel jobSubmitterMessageLabel = new JLabel("Welcome Job Submitter!", SwingConstants.CENTER);
         
+                            
         JPanel informationInputJobSubmitterPanel = new JPanel();
         informationInputJobSubmitterPanel.setLayout(new GridLayout(10, 2));
-        
+             
         informationInputJobSubmitterPanel.add(jobSubmitterMessageLabel);
+        
+        informationInputJobSubmitterPanel.add(new JLabel(""));
 
         JLabel clientIDLabel = new JLabel("Client ID: ");
         JTextField clientIDTextField = new JTextField(30);
@@ -126,11 +127,14 @@ public class Main {
         List<Integer> carOwnerIDs = new ArrayList<>();
 
         JPanel informationInputCarOwnerPanel = new JPanel();
-        JLabel carOwnerMessageLabel = new JLabel("Welcome Car Owner");
-        informationInputCarOwnerPanel.add(carOwnerMessageLabel);
-
         informationInputCarOwnerPanel.setLayout(new GridLayout(10, 2));
 
+        JLabel carOwnerMessageLabel = new JLabel("Welcome Car Owner!", SwingConstants.CENTER);
+        
+        informationInputCarOwnerPanel.add(carOwnerMessageLabel);
+
+        informationInputCarOwnerPanel.add(new JLabel(""));
+       
         JLabel ownerIDLabel = new JLabel("Owner ID: ");
         JTextField ownerIDTextField = new JTextField(25);
 
@@ -210,7 +214,7 @@ public class Main {
         JPanel cloudControllerPanel = new JPanel(new GridLayout(10,1));
         cloudControllerPanel.setVisible(false);
         
-        JLabel cloudControllerMessageLabel = new JLabel("Welcome Cloud Controller");
+        JLabel cloudControllerMessageLabel = new JLabel("Welcome Cloud Controller!", SwingConstants.CENTER);
         cloudControllerPanel.add(cloudControllerMessageLabel);
 
         //Calculate Job Completion Times
@@ -688,25 +692,25 @@ public class Main {
         createAccountPanel.add(CarOwnerAccountRadioButton);
         JobSubmitterAccountRadioButton.setSelected(true);
 
-        JLabel userCreateLabel = new JLabel("username: ");
+        JLabel userCreateLabel = new JLabel("Username: ");
         JTextField userCreateTextField = new JTextField(30);
 
         createAccountPanel.add(userCreateLabel);
         createAccountPanel.add(userCreateTextField);
 
-        JLabel passwordCreateLabel = new JLabel("password: ");
+        JLabel passwordCreateLabel = new JLabel("Password: ");
         JPasswordField passwordCreateTextField = new JPasswordField(30);
 
         createAccountPanel.add(passwordCreateLabel);
         createAccountPanel.add(passwordCreateTextField);
 
-        JLabel fullnameCreateLabel = new JLabel("full name: ");
+        JLabel fullnameCreateLabel = new JLabel("Full Name: ");
         JTextField fullnameCreateTextField = new JTextField(30);
 
         createAccountPanel.add(fullnameCreateLabel);
         createAccountPanel.add(fullnameCreateTextField);
 
-        JLabel carModelCreateLabel = new JLabel("car model: ");
+        JLabel carModelCreateLabel = new JLabel("Car Model: ");
         JTextField carModelCreateTextField = new JTextField(30);
 
         createAccountPanel.add(carModelCreateLabel);
@@ -714,7 +718,7 @@ public class Main {
         carModelCreateLabel.setVisible(false);
         carModelCreateTextField.setVisible(false);
 
-        JLabel carMakeCreateLabel = new JLabel("car make: ");
+        JLabel carMakeCreateLabel = new JLabel("Car Make: ");
         JTextField carMakeCreateTextField = new JTextField(30);
 
         createAccountPanel.add(carMakeCreateLabel);
@@ -722,7 +726,7 @@ public class Main {
         carMakeCreateLabel.setVisible(false);
         carMakeCreateTextField.setVisible(false);
 
-        JLabel carYearCreateLabel = new JLabel("car year: ");
+        JLabel carYearCreateLabel = new JLabel("Car Year: ");
         JTextField carYearCreateTextField = new JTextField(30);
 
         createAccountPanel.add(carYearCreateLabel);
@@ -730,7 +734,7 @@ public class Main {
         carYearCreateLabel.setVisible(false);
         carYearCreateTextField.setVisible(false);
 
-        JLabel carVinCreateLabel = new JLabel("car vin: ");
+        JLabel carVinCreateLabel = new JLabel("Car VIN: ");
         JTextField carVinCreateTextField = new JTextField(30);
 
         createAccountPanel.add(carVinCreateLabel);
@@ -738,7 +742,7 @@ public class Main {
         carVinCreateLabel.setVisible(false);
         carVinCreateTextField.setVisible(false);
 
-        JLabel carPlateNumberCreateLabel = new JLabel("car plate number: ");
+        JLabel carPlateNumberCreateLabel = new JLabel("Car Plate Number: ");
         JTextField carPlateNumberCreateTextField = new JTextField(30);
 
         createAccountPanel.add(carPlateNumberCreateLabel);
@@ -746,7 +750,7 @@ public class Main {
         carPlateNumberCreateLabel.setVisible(false);
         carPlateNumberCreateTextField.setVisible(false);
 
-        JLabel carTypeCreateLabel = new JLabel("car type: ");
+        JLabel carTypeCreateLabel = new JLabel("Car Type: ");
         JTextField carTypeCreateTextField = new JTextField(30);
 
         createAccountPanel.add(carTypeCreateLabel);
