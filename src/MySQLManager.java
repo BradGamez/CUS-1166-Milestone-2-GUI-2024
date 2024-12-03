@@ -2,7 +2,7 @@ import java.sql.*;
 import java.util.*;
 
 public class MySQLManager {
-    private static final String uri = "jdbc:mysql://localhost:3306/VCRTS?user=cus1166&password=crfwJ4wpd7kxPH&autoReconnect=true&characterEncoding=utf8";
+    private static final String uri = "jdbc:mysql://home.ddns.bradpersaud.xyz:3306/VCRTS?user=cus1166&password=crfwJ4wpd7kxPH&autoReconnect=true&characterEncoding=utf8";
     private static Connection connection;
 
     public static Connection getConnection() throws SQLException {
@@ -63,16 +63,16 @@ public class MySQLManager {
             final String VIN = resultSet.getString("VIN");
             final String plateNum = resultSet.getString("plateNum");
             final String type = resultSet.getString("type");
-            final boolean accountingJobs = resultSet.getBoolean("accountingJobs");
+            final boolean acceptingJobs = resultSet.getBoolean("acceptingJobs");
 
-            list.add(new Car(model, make, year, VIN, plateNum, type, accountingJobs));
+            list.add(new Car(model, make, year, VIN, plateNum, type, acceptingJobs));
         }
         return list;
     }
 
     public static void setCar(Car car, Owner owner) throws SQLException {
         Statement statement = getConnection().createStatement();
-        ResultSet resultSetAccountData = statement.executeQuery("INSERT INTO VCRTS.carData (ownerID, model, make, year, VIN, plateNum, type, aceptingJobs) VALUES ('" + owner.getID() + "', '" + car.getModel() + "', '" + car.getMake() + "', '" + car.getYear() + "', '" + car.getVIN() + "', '" + car.getPlateNum() + "', '" + car.getType() + "', '" + car.isAcceptingJobs() +"')");
+        ResultSet resultSetAccountData = statement.executeQuery("INSERT INTO VCRTS.carData (ownerID, model, make, year, VIN, plateNum, type, acceptingJobs) VALUES ('" + owner.getID() + "', '" + car.getModel() + "', '" + car.getMake() + "', '" + car.getYear() + "', '" + car.getVIN() + "', '" + car.getPlateNum() + "', '" + car.getType() + "', '" + car.isAcceptingJobs() +"')");
     }
 
     public static List<Job> getJobs(int clientID) throws SQLException {
