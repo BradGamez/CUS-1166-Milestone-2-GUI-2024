@@ -2,7 +2,7 @@ import java.sql.*;
 import java.util.*;
 
 public class MySQLManager {
-    private static final String uri = "jdbc:mysql://home.ddns.bradpersaud.xyz:3306/VCRTS?user=cus1166&password=crfwJ4wpd7kxPH&autoReconnect=true&characterEncoding=utf8";
+    private static final String uri = "jdbc:mysql://home.ddns.bradpersaud.xyz:3306/VCRTS?user=cus1166&password=crfwJ4wpd7kxPH&autoReconnect=true&characterEncoding=utf8&useSSL=false";
     private static Connection connection;
 
     public static Connection getConnection() throws SQLException {
