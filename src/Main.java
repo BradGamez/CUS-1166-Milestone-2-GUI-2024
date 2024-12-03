@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -297,15 +298,25 @@ public class Main {
                 System.out.println(currentSelectionButton.getText());
                 String username = userTextField.getText();
                 String password = passwordTextField.getText();
-                for (int i = 0; i < clientArray.size(); i++) {
-                    if (username.equals(clientArray.get(i).getUsername()) && password.equals(clientArray.get(i).getPassword())) {
+                
+                try {
+                    // Attempt to retrieve the Client data from the database
+                    Client client = MySQLManager.getClient(username);
+
+                    if (client != null && client.getPassword().equals(password)) {
                         currentSelectionButton.setText("Job Submitter");
                         logInPanel.setVisible(false);
                         informationInputJobSubmitterPanel.setVisible(true);
+                        userArrayPosition[0] = clientArray.indexOf(client); // Optional: Save the client position if needed
+                    } else {
+                        JOptionPane.showMessageDialog(frame, "Invalid username or password.");
                     }
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(frame, "Error retrieving data from database.");
                 }
             }
-        });
+        });	   			
 
         //car owner login
         JButton clientCarOwnerLoginButton = new JButton("Car Owner Login");
@@ -316,19 +327,27 @@ public class Main {
             public void actionPerformed(ActionEvent e) {
                 System.out.println(currentSelectionButton.getText());
                 String username = userTextField.getText();
-                String password = new String(passwordTextField.getPassword()); 
-                for (int i = 0; i < ownerArray.size(); i++) {
-                    if (username.equals(ownerArray.get(i).getUsername()) && password.equals(ownerArray.get(i).getPassword())) {
+                String password = new String(passwordTextField.getPassword());
+
+                try {
+                    // Attempt to retrieve the Owner data from the database
+                    Owner owner = MySQLManager.getOwner(username);
+
+                    if (owner != null && owner.getPassword().equals(password)) {
                         currentSelectionButton.setText("Car Owner");
                         logInPanel.setVisible(false);
                         informationInputCarOwnerPanel.setVisible(true);
-                        userArrayPosition[0] = i;
+                        userArrayPosition[0] = ownerArray.indexOf(owner); // Optional: Save the owner position if needed
+                    } else {
+                        JOptionPane.showMessageDialog(frame, "Invalid username or password.");
                     }
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(frame, "Error retrieving data from database.");
                 }
             }
         });
-
-        //cloud controller log in
+      //cloud controller log in
         JButton clientCloudControllerLoginButton = new JButton("Cloud Controller Login");
         logInPanel.add(clientCloudControllerLoginButton, BorderLayout.CENTER);
 
@@ -346,6 +365,8 @@ public class Main {
                 }
             }
         });
+        
+              
         
         // Button to view job submissions in Cloud Controller
         JButton viewJobsButtonCC = new JButton("Accept or Reject Job Submissions");
@@ -771,7 +792,18 @@ public class Main {
                 String username = userCreateTextField.getText();
                 String password = passwordCreateTextField.getText();
                 String fullname = fullnameCreateTextField.getText();
-                clientArray.add(new Client(username,password,clientArray.size() + ownerArray.size() + 1,fullname, 0.00));
+                Client newClient = new Client(username, password, clientArray.size() + ownerArray.size() + 1, fullname, 0.00);
+                clientArray.add(newClient);
+
+                try {
+                    // Insert new client into the database
+                    MySQLManager.setClient(newClient);
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(frame, "Error creating account.");
+                    return;
+                }
+
                 currentSelectionButton.setText("Account Created");
                 createAccountPanel.setVisible(false);
                 informationInputJobSubmitterPanel.setVisible(true);
@@ -796,9 +828,23 @@ public class Main {
                 String carVin = carVinCreateTextField.getText();
                 String carPlateNumber = carPlateNumberCreateTextField.getText();
                 String carType = carTypeCreateTextField.getText();
-
-                ownerArray.add(new Owner(username, password,clientArray.size() + ownerArray.size() + 1, fullname, 0.00, new Car(carModel, carMake, carYear, carVin, carPlateNumber, carType, true)));
-                currentSelectionButton.setText("Account Created");
+                
+                //Create a new owner and car objects
+                Car newCar = new Car(carModel, carMake, carYear, carVin, carPlateNumber, carType, true);
+                Owner newOwner = new Owner(username, password,clientArray.size() + ownerArray.size() + 1, fullname, 0.00, new Car(carModel, carMake, carYear, carVin, carPlateNumber, carType, true));
+               	ownerArray.add(newOwner);
+               	
+               	try {
+               		//Insert new owner and car into the database
+               		MySQLManager.setOwner(newOwner);
+               		MySQLManager.setCar(newCar, newOwner);
+               	} catch (SQLException ex) {
+               		ex.printStackTrace();
+               		JOptionPane.showMessageDialog(frame, "Error creating account.");
+               		return;
+               	}
+        
+        		currentSelectionButton.setText("Account Created");
                 createAccountPanel.setVisible(false);
                 informationInputCarOwnerPanel.setVisible(true);
                 userArrayPosition[0] = ownerArray.size() - 1;
@@ -907,25 +953,25 @@ public class Main {
         clientProfilePanel.setLayout(new GridLayout(8,2));
 
         JLabel clientNameLabel = new JLabel("Name: ");
-        JLabel clientName = new JLabel(clientArray.get(userArrayPosition[0]).getFullName());
+        JLabel clientName = new JLabel();
 
         clientProfilePanel.add(clientNameLabel);
         clientProfilePanel.add(clientName);
 
         JLabel clientUsernameLabel = new JLabel("Username: ");
-        JLabel clientUsername = new JLabel(clientArray.get(userArrayPosition[0]).getUsername());
+        JLabel clientUsername = new JLabel();
 
         clientProfilePanel.add(clientUsernameLabel);
         clientProfilePanel.add(clientUsername);
 
         JLabel clientProfileIDLabel = new JLabel("ID: ");
-        JLabel clientProfileID = new JLabel(String.valueOf(clientArray.get(userArrayPosition[0]).getID()));
+        JLabel clientProfileID = new JLabel();
 
         clientProfilePanel.add(clientProfileIDLabel);
         clientProfilePanel.add(clientProfileID);
 
         JLabel clientBalanceLabel = new JLabel("Account Balance: ");
-        JLabel clientBalance = new JLabel(String.valueOf(clientArray.get(userArrayPosition[0]).getBalance()));
+        JLabel clientBalance = new JLabel();
 
         clientProfilePanel.add(clientBalanceLabel);
         clientProfilePanel.add(clientBalance);
@@ -936,18 +982,29 @@ public class Main {
         clientProfileButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                clientName.setText(clientArray.get(userArrayPosition[0]).getFullName());
-                clientUsername.setText(clientArray.get(userArrayPosition[0]).getUsername());
-                clientProfileID.setText(String.valueOf(clientArray.get(userArrayPosition[0]).getID()));
-                clientBalance.setText(String.valueOf(clientArray.get(userArrayPosition[0]).getBalance()));
+            	try {
+            		//Fetch the client from the database using the username
+            		Client client = MySQLManager.getClient(clientArray.get(userArrayPosition[0]).getUsername());
 
-                clientProfilePanel.setVisible(true);
-                informationInputJobSubmitterPanel.setVisible(false);
+                    // Update the labels with the fetched data
+                    clientName.setText(client.getFullName());
+                    clientUsername.setText(client.getUsername());
+                    clientProfileID.setText(String.valueOf(client.getID()));
+                    clientBalance.setText(String.valueOf(client.getBalance()));
+
+                    // Make the profile panel visible and hide the job submitter panel
+                    clientProfilePanel.setVisible(true);
+                    informationInputJobSubmitterPanel.setVisible(false);
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(frame, "Error retrieving profile.");
+                }
             }
         });
+
         clientProfilePanel.setVisible(false);
 
-        //back to job submission page
+        // back to job submission page
         JButton returnToJobPage = new JButton("Home");
         clientProfilePanel.add(returnToJobPage);
 
@@ -959,37 +1016,36 @@ public class Main {
             }
         });
         
-        
         //car owner profile page
         JPanel ownerProfilePanel = new JPanel();
         ownerProfilePanel.setLayout(new GridLayout(8,2));
 
         JLabel ownerNameLabel = new JLabel("Name: ");
-        JLabel ownerName = new JLabel(ownerArray.get(userArrayPosition[0]).getFullName());
+        JLabel ownerName = new JLabel();
 
         ownerProfilePanel.add(ownerNameLabel);
         ownerProfilePanel.add(ownerName);
 
         JLabel ownerUsernameLabel = new JLabel("Username: ");
-        JLabel ownerUsername = new JLabel(ownerArray.get(userArrayPosition[0]).getUsername());
+        JLabel ownerUsername = new JLabel();
 
         ownerProfilePanel.add(ownerUsernameLabel);
         ownerProfilePanel.add(ownerUsername);
 
         JLabel ownerProfileIDLabel = new JLabel("ID: ");
-        JLabel ownerProfileID = new JLabel(String.valueOf(ownerArray.get(userArrayPosition[0]).getID()));
+        JLabel ownerProfileID = new JLabel();
 
         ownerProfilePanel.add(ownerProfileIDLabel);
         ownerProfilePanel.add(ownerProfileID);
 
         JLabel ownerBalanceLabel = new JLabel("Account Balance: ");
-        JLabel ownerBalance = new JLabel(String.valueOf(ownerArray.get(userArrayPosition[0]).getBalance()));
-
+        JLabel ownerBalance = new JLabel();
+        		
         ownerProfilePanel.add(ownerBalanceLabel);
         ownerProfilePanel.add(ownerBalance);
 
         JLabel ownerCarLabel = new JLabel("Car: ");
-        JLabel carInfo = new JLabel(ownerArray.get(userArrayPosition[0]).getCars().toString());
+        JLabel carInfo = new JLabel();
 
         ownerProfilePanel.add(ownerCarLabel);
         ownerProfilePanel.add(carInfo);
@@ -1000,19 +1056,32 @@ public class Main {
         ownerProfileButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ownerName.setText(ownerArray.get(userArrayPosition[0]).getFullName());
-                ownerUsername.setText(ownerArray.get(userArrayPosition[0]).getUsername());
-                ownerProfileID.setText(String.valueOf(ownerArray.get(userArrayPosition[0]).getID()));
-                ownerBalance.setText(String.valueOf(ownerArray.get(userArrayPosition[0]).getBalance()));
-                carInfo.setText(ownerArray.get(userArrayPosition[0]).getCars().toString());
+            	try {
+                    // Fetch the owner from the database using the username
+                    Owner owner = MySQLManager.getOwner(ownerArray.get(userArrayPosition[0]).getUsername());
 
-                ownerProfilePanel.setVisible(true);
-                informationInputCarOwnerPanel.setVisible(false);
+                    // Update the labels with the fetched data
+                    ownerName.setText(owner.getFullName());
+                    ownerUsername.setText(owner.getUsername());
+                    ownerProfileID.setText(String.valueOf(owner.getID()));
+                    ownerBalance.setText(String.valueOf(owner.getBalance()));
+
+                    // Fetch and display the car information
+                    carInfo.setText(owner.getCars().toString()); // This will display the list of cars associated with the owner
+
+                    // Make the profile panel visible and hide the car owner panel
+                    ownerProfilePanel.setVisible(true);
+                    informationInputCarOwnerPanel.setVisible(false);
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(frame, "Error retrieving profile.");
+                }
             }
         });
+
         ownerProfilePanel.setVisible(false);
 
-        //back to car owner page
+        // Back to car owner page
         JButton returnToCarPage = new JButton("Home");
         ownerProfilePanel.add(returnToCarPage);
 
@@ -1023,7 +1092,6 @@ public class Main {
                 informationInputCarOwnerPanel.setVisible(true);
             }
         });
-
         //job submitter log out button
         JButton jobSubmitterLogoutButton = new JButton("Log Out");
         informationInputJobSubmitterPanel.add(jobSubmitterLogoutButton);
