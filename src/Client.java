@@ -4,7 +4,7 @@ import java.util.List;
 public class Client extends Account {
     private String fullName;
     private double balance;
-    private List<Job> jobs = new ArrayList<>();
+    private List<ClientSubmission> clientSubmissions = new ArrayList<>();
 
     public Client(String username, String password, int ID, String fullName, double balance) {
         super(username, password, ID);
@@ -12,11 +12,11 @@ public class Client extends Account {
         this.balance = balance;
     }
 
-    public Client(String username, String password, int ID, String fullName, double balance, List<Job> jobsList) {
+    public Client(String username, String password, int ID, String fullName, double balance, List<ClientSubmission> jobsList) {
         super(username, password, ID);
         this.fullName = fullName;
         this.balance = balance;
-        this.jobs = jobsList;
+        this.clientSubmissions = jobsList;
     }
 
     public String getFullName() {
@@ -35,16 +35,16 @@ public class Client extends Account {
         this.balance = balance;
     }
 
-    public List<Job> getJobs() {
-        return jobs;
+    public List<ClientSubmission> getJobs() {
+        return clientSubmissions;
     }
 
-    public void requestJob(Job job) {
-        jobs.add(job);
+    public void requestJob(ClientSubmission clientSubmission) {
+        clientSubmissions.add(clientSubmission);
     }
 
-    public void setJobs(List<Job> jobs) {
-        this.jobs = jobs;
+    public void setJobs(List<ClientSubmission> clientSubmissions) {
+        this.clientSubmissions = clientSubmissions;
     }
 
     public String toString() {

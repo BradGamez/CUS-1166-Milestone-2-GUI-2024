@@ -1,5 +1,4 @@
 import java.io.*;
-import java.sql.*;
 import java.util.*;
 
 public class StorageManager {
@@ -81,18 +80,18 @@ public class StorageManager {
         }
     }
 
-    public static void setJob(Job job) {
+    public static void setJob(ClientSubmission clientSubmission) {
         try {
-            File file = new File("./jobs/" + job.getID() + ".txt");
+            File file = new File("./jobs/" + clientSubmission.getID() + ".txt");
             file.createNewFile();
-            FileWriter fileWriter = new FileWriter("./jobs/" + job.getID() + ".txt");
-            fileWriter.write(job.toString());
+            FileWriter fileWriter = new FileWriter("./jobs/" + clientSubmission.getID() + ".txt");
+            fileWriter.write(clientSubmission.toString());
             fileWriter.close();
         } catch (IOException error) {
             error.printStackTrace();
         }
     }
-    public static Job getJob(String jobID) {
+    public static ClientSubmission getJob(String jobID) {
         try {
             LinkedList list = new LinkedList();
             File file = new File("./jobs/" + jobID + ".txt");
@@ -100,7 +99,7 @@ public class StorageManager {
             while (scanner.hasNextLine()) {
                 list.add(scanner.nextLine());
             }
-            return new Job(list.get(0).toString(), list.get(1).toString(), list.get(2).toString(), list.get(3).toString());
+            return new ClientSubmission(list.get(0).toString(), list.get(1).toString(), list.get(2).toString(), list.get(3).toString());
         } catch (FileNotFoundException error) {
             error.printStackTrace();
             return null;

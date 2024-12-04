@@ -3,16 +3,16 @@ import java.util.Map;
 
 public class CloudController {
     private int redundancyLevel;
-    private List<Job> assignedJobs;
-    private List<Job> completedJob;
+    private List<ClientSubmission> assignedClientSubmissions;
+    private List<ClientSubmission> completedClientSubmission;
     private int maxVehicleCapacity;
     private Map<String, Car> vehicleCheckPoint;
     private Map<String, Car> vehiclePool;
 
-    public CloudController(int redundancyLevel, List<Job> assignedJobs, List<Job> completedJob, int maxVehicleCapacity, Map<String, Car> vehicleCheckPoint, Map<String, Car> vehiclePool) {
+    public CloudController(int redundancyLevel, List<ClientSubmission> assignedClientSubmissions, List<ClientSubmission> completedClientSubmission, int maxVehicleCapacity, Map<String, Car> vehicleCheckPoint, Map<String, Car> vehiclePool) {
         this.redundancyLevel = redundancyLevel;
-        this.assignedJobs = assignedJobs;
-        this.completedJob = completedJob;
+        this.assignedClientSubmissions = assignedClientSubmissions;
+        this.completedClientSubmission = completedClientSubmission;
         this.maxVehicleCapacity = maxVehicleCapacity;
         this.vehicleCheckPoint = vehicleCheckPoint;
         this.vehiclePool = vehiclePool;
@@ -26,24 +26,24 @@ public class CloudController {
         this.redundancyLevel = redundancyLevel;
     }
 
-    public List<Job> getAssignedJobs() {
-        return assignedJobs;
+    public List<ClientSubmission> getAssignedJobs() {
+        return assignedClientSubmissions;
     }
 
-    public boolean assignJob(Job job) {
-        return assignedJobs.add(job);
+    public boolean assignJob(ClientSubmission clientSubmission) {
+        return assignedClientSubmissions.add(clientSubmission);
     }
 
-    public void setAssignedJobs(List<Job> assignedJobs) {
-        this.assignedJobs = assignedJobs;
+    public void setAssignedJobs(List<ClientSubmission> assignedClientSubmissions) {
+        this.assignedClientSubmissions = assignedClientSubmissions;
     }
 
-    public List<Job> getCompletedJob() {
-        return completedJob;
+    public List<ClientSubmission> getCompletedJob() {
+        return completedClientSubmission;
     }
 
-    public void setCompletedJob(List<Job> completedJob) {
-        this.completedJob = completedJob;
+    public void setCompletedJob(List<ClientSubmission> completedClientSubmission) {
+        this.completedClientSubmission = completedClientSubmission;
     }
 
     public int getMaxVehicleCapacity() {

@@ -13,8 +13,8 @@ import java.util.stream.Collectors;
 
 public class Main {
     //ArrayLists to store multiple submissions
-    private static ArrayList<Job> jobSubmissions = new ArrayList<>();
-    private static ArrayList<String> carOwnerSubmissions = new ArrayList<>();
+    private static ArrayList<ClientSubmission> jobSubmissions = new ArrayList<>();
+    private static ArrayList<OwnerSubmission> carOwnerSubmissions = new ArrayList<>();
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("Vehicular Cloud Console");
@@ -86,7 +86,7 @@ public class Main {
                 tempJobDurations.add(jobDurationInt);
 
                 // Create a job submission string and add it to the temporary jobSubmissions list
-                Job jobSubmission = new Job(clientID, jobDuration, jobDeadline, timestamp);
+                ClientSubmission jobSubmission = new ClientSubmission(clientID, jobDuration, jobDeadline, timestamp);
                 jobSubmissions.add(jobSubmission);
 
                 // Clear the input fields after submission
@@ -173,7 +173,7 @@ public class Main {
                 int ownerIDint = Integer.parseInt(ownerID);
                 tempCarOwnerIDs.add(ownerIDint);
                 // Create a car submission string and add it to the temporary carOwnerSubmissions list
-                String carSubmission = "Owner ID: " + ownerID + ", VIN Info: " + vinInfo + ", Residency Time (hrs): " + residencyTime + ", Timestamp: " + timestamp;
+                OwnerSubmission carSubmission = new OwnerSubmission(ownerID, vinInfo, residencyTime, timestamp);
                 carOwnerSubmissions.add(carSubmission);
 
                 // Clear the input fields after submission
@@ -183,7 +183,7 @@ public class Main {
 
                 try {
                     ClientSocketManager carOwnerConnection = new ClientSocketManager(0);
-                    carOwnerConnection.writeCar(carSubmission);
+                    carOwnerConnection.writeCar(carSubmission.toString());
                     carOwnerConnection.start();
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
@@ -202,7 +202,7 @@ public class Main {
                 if (carOwnerSubmissions.isEmpty()) {
                     JOptionPane.showMessageDialog(frame, "No pending car owner submissions.", "Pending Car Owner Submissions", JOptionPane.INFORMATION_MESSAGE);
                 } else {
-                    JOptionPane.showMessageDialog(frame, String.join("\n", carOwnerSubmissions), "Pending Car Owner Submissions", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, String.join("\n", carOwnerSubmissions.toString()), "Pending Car Owner Submissions", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
         });
@@ -383,7 +383,7 @@ public class Main {
                 //Loops through the job submissions
                 for (int i = 0; i < jobSubmissions.size(); i++) {
                     final int index = i;  
-                    Job job = jobSubmissions.get(i);
+                    ClientSubmission job = jobSubmissions.get(i);
 
                     JPanel singleJobPanel = new JPanel();
                     singleJobPanel.setLayout(new BoxLayout(singleJobPanel, BoxLayout.X_AXIS)); // Layout for job info and buttons
@@ -398,15 +398,9 @@ public class Main {
                     acceptButton.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                            //Write the accepted job to the file
-                            try (FileWriter writer = new FileWriter("job_submitter_data.txt", true)) {
-                                writer.write(job + "\n");
-                                writer.write("---------------------------\n");
-                            } catch (IOException ex) {
-                                ex.printStackTrace();
-                            }
+                            //Write the accepted job to database
                             try {
-                                MySQLManager.setJob(job, MySQLManager.getClient("user1"));
+                                MySQLManager.setClientSubmissions(job);
                             } catch (SQLException ex) {
                                 throw new RuntimeException(ex);
                             }
@@ -438,7 +432,7 @@ public class Main {
                             
                         	//Notify the server
                         	Server.notifyClient(clientIDInt,  message);
-                            JOptionPane.showMessageDialog(frame, job, "Job Rejected", JOptionPane.INFORMATION_MESSAGE);
+                            JOptionPane.showMessageDialog(frame, job.toString(), "Job Rejected", JOptionPane.INFORMATION_MESSAGE);
 
                         	// Remove the rejected job from the list
                             jobSubmissions.remove(index);
@@ -462,15 +456,9 @@ public class Main {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         for (int i = 0; i < jobSubmissions.size(); i++) {
-                            Job job = jobSubmissions.get(i);
-                            try (FileWriter writer = new FileWriter("job_submitter_data.txt", true)) {
-                                writer.write(job + "\n");
-                                writer.write("---------------------------\n");
-                            } catch (IOException ex) {
-                                ex.printStackTrace();
-                            }
+                            ClientSubmission job = jobSubmissions.get(i);
                             try {
-                                MySQLManager.setJob(job, MySQLManager.getClient("user1"));
+                                MySQLManager.setClientSubmissions(job);
                             } catch (SQLException ex) {
                                 throw new RuntimeException(ex);
                             }
@@ -498,7 +486,7 @@ public class Main {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         for (int i = 0; i < jobSubmissions.size(); i++) {
-                            Job job = jobSubmissions.get(i);
+                            ClientSubmission job = jobSubmissions.get(i);
                             int clientIDInt = tempJobClientIDs.get(i);
                             String message = "Your job was rejected: " + job;
 
@@ -541,12 +529,12 @@ public class Main {
                 // Loops through the car owner submissions
                 for (int i = 0; i < carOwnerSubmissions.size(); i++) {
                     final int index = i;  
-                    String car = carOwnerSubmissions.get(i);  
+                    OwnerSubmission car = carOwnerSubmissions.get(i);
 
                     JPanel singleCarPanel = new JPanel();
                     singleCarPanel.setLayout(new BoxLayout(singleCarPanel, BoxLayout.X_AXIS)); 
 
-                    singleCarPanel.add(new JLabel(car));
+                    singleCarPanel.add(new JLabel(car.toString()));
 
                     JButton acceptButton = new JButton("Accept");
                     JButton rejectButton = new JButton("Reject");
@@ -558,13 +546,12 @@ public class Main {
                         public void actionPerformed(ActionEvent e) {
                             // Write the accepted car to the file
                             String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-                            try (FileWriter writer = new FileWriter("car_owner_data.txt", true)) {
-                                writer.write(car + "\n");
-                                writer.write("---------------------------\n");
-                            } catch (IOException ex) {
-                                ex.printStackTrace();
+                            try {
+                                MySQLManager.setOwnerSubmissions(car);
+                            } catch (SQLException ex) {
+                                throw new RuntimeException(ex);
                             }
-                            
+
                             int ownerIDInt = tempCarOwnerIDs.get(finalI);
                             carOwnerIDs.add(ownerIDInt);
                             String message = "Your car submission was accepted: " + car;
@@ -612,12 +599,11 @@ public class Main {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         for (int i = 0; i < carOwnerSubmissions.size(); i++) {
-                            String car = carOwnerSubmissions.get(i);
-                            try (FileWriter writer = new FileWriter("car_owner_data.txt", true)) {
-                                writer.write(car + "\n");
-                                writer.write("---------------------------\n");
-                            } catch (IOException ex) {
-                                ex.printStackTrace();
+                            OwnerSubmission car = carOwnerSubmissions.get(i);
+                            try {
+                                MySQLManager.setOwnerSubmissions(car);
+                            } catch (SQLException ex) {
+                                throw new RuntimeException(ex);
                             }
 
                             int ownerIDInt = tempCarOwnerIDs.get(i);
@@ -639,7 +625,7 @@ public class Main {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         for (int i = 0; i < carOwnerSubmissions.size(); i++) {
-                            String car = carOwnerSubmissions.get(i);
+                            OwnerSubmission car = carOwnerSubmissions.get(i);
                             int ownerIDInt = tempCarOwnerIDs.get(i);
                             String message = "Your car submission was rejected: " + car;
 

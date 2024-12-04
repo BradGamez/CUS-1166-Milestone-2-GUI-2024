@@ -1,12 +1,10 @@
-import java.sql.Timestamp;
-
-public class Job {
+public class ClientSubmission {
     private String ID;
     private String duration;
     private String deadline;
     private String timestamp;
 
-    public Job(String ID, String duration, String deadline, String timestamp) {
+    public ClientSubmission(String ID, String duration, String deadline, String timestamp) {
         this.ID = ID;
         this.duration = duration;
         this.deadline = deadline;
@@ -47,6 +45,6 @@ public class Job {
 
 
     public String toString() {
-        return getID() + "\n" + getDuration() + "\n" + getDeadline() + "\n" + getTimestamp();
+        return "Client ID: "+ getID() + "; Job Duration: " + getDuration() + "; Job Deadline: " + getDeadline() + "; Timestamp: " + getTimestamp() + "\n";
     }
 }

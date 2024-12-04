@@ -34,7 +34,7 @@ public class ClientSocketManager extends Thread {
     public void writeJob(String text) throws IOException {
         out.println(text);
 
-        System.out.println("Job sent");
+        System.out.println("ClientSubmission sent");
     }
 
     public void writeCar(String text) throws IOException {
