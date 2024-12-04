@@ -100,7 +100,7 @@ public class StorageManager {
             while (scanner.hasNextLine()) {
                 list.add(scanner.nextLine());
             }
-            return new Job(list.get(0).toString(), list.get(1).toString(), Timestamp.valueOf(list.get(2).toString()), Double.valueOf(list.get(3).toString()));
+            return new Job(list.get(0).toString(), list.get(1).toString(), list.get(2).toString(), list.get(3).toString());
         } catch (FileNotFoundException error) {
             error.printStackTrace();
             return null;

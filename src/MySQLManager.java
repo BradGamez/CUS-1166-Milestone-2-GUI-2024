@@ -2,7 +2,7 @@ import java.sql.*;
 import java.util.*;
 
 public class MySQLManager {
-    private static final String uri = "jdbc:mysql://home.ddns.bradpersaud.xyz:3305/VCRTS?user=cus1166&password=&autoReconnect=true&characterEncoding=utf8&useSSL=false";
+    private static final String uri = "jdbc:mysql://home.ddns.bradpersaud.xyz:3305/VCRTS?user=cus1166&password=&autoReconnect=true&characterEncoding=utf8";
     private static Connection connection;
 
     public static Connection getConnection() throws SQLException {
@@ -82,17 +82,17 @@ public class MySQLManager {
 
         while (resultSet.next()) {
             final String ID = resultSet.getString("ID");
-            final String description = resultSet.getString("description");
-            final Timestamp timeToCompletion = resultSet.getTimestamp("timeToCompletion");
-            final double cost = resultSet.getDouble("cost");
+            final String duration = resultSet.getString("duration");
+            final String deadline = resultSet.getString("deadline");
+            final String timestamp = resultSet.getString("timestamp");
 
-            list.add(new Job(ID, description, timeToCompletion, cost));
+            list.add(new Job(ID, duration, deadline, timestamp));
         }
         return list;
     }
 
     public static void setJob(Job job, Client client) throws SQLException {
         Statement statement = getConnection().createStatement();
-        ResultSet resultSetAccountData = statement.executeQuery("INSERT INTO VCRTS.jobData (clientID, ID, description, timeToCompletion, cost) VALUES ('" + client.getID() + "', '" + job.getID() + "', '" + job.getDescription() + "', '" + job.getTimeToCompletion() + "', '" + job.getCost() + "')");
+        ResultSet resultSetAccountData = statement.executeQuery("INSERT INTO VCRTS.jobData (clientID, ID, duration, deadline, timestamp) VALUES ('" + client.getID() + "', '" + job.getID() + "', '" + job.getDuration() + "', '" + job.getDeadline() + "', '" + job.getTimestamp() + "')");
     }
 }

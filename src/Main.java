@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 public class Main {
     //ArrayLists to store multiple submissions
-    private static ArrayList<String> jobSubmissions = new ArrayList<>();
+    private static ArrayList<Job> jobSubmissions = new ArrayList<>();
     private static ArrayList<String> carOwnerSubmissions = new ArrayList<>();
 
     public static void main(String[] args) {
@@ -86,7 +86,7 @@ public class Main {
                 tempJobDurations.add(jobDurationInt);
 
                 // Create a job submission string and add it to the temporary jobSubmissions list
-                String jobSubmission = "Client ID: " + clientID + ", Job Duration (hrs): " + jobDuration + ", Job Deadline (hrs): " + jobDeadline + ", Timestamp: " + timestamp;
+                Job jobSubmission = new Job(clientID, jobDuration, jobDeadline, timestamp);
                 jobSubmissions.add(jobSubmission);
 
                 // Clear the input fields after submission
@@ -116,7 +116,7 @@ public class Main {
                 if (jobSubmissions.isEmpty()) {
                     JOptionPane.showMessageDialog(frame, "No pending job submissions.", "Pending Job Submissions", JOptionPane.INFORMATION_MESSAGE);
                 } else {
-                    JOptionPane.showMessageDialog(frame, String.join("\n", jobSubmissions), "Pending Job Submissions", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, String.join("\n", jobSubmissions.toString()), "Pending Job Submissions", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
         });
@@ -383,12 +383,12 @@ public class Main {
                 //Loops through the job submissions
                 for (int i = 0; i < jobSubmissions.size(); i++) {
                     final int index = i;  
-                    String job = jobSubmissions.get(i);  
+                    Job job = jobSubmissions.get(i);
 
                     JPanel singleJobPanel = new JPanel();
                     singleJobPanel.setLayout(new BoxLayout(singleJobPanel, BoxLayout.X_AXIS)); // Layout for job info and buttons
 
-                    singleJobPanel.add(new JLabel(job));
+                    singleJobPanel.add(new JLabel(job.toString()));
 
                     JButton acceptButton = new JButton("Accept");
                     JButton rejectButton = new JButton("Reject");
@@ -404,6 +404,11 @@ public class Main {
                                 writer.write("---------------------------\n");
                             } catch (IOException ex) {
                                 ex.printStackTrace();
+                            }
+                            try {
+                                MySQLManager.setJob(job, MySQLManager.getClient("user1"));
+                            } catch (SQLException ex) {
+                                throw new RuntimeException(ex);
                             }
 
                             jobClientIDs.add(tempJobClientIDs.get(finalI));
@@ -457,14 +462,19 @@ public class Main {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         for (int i = 0; i < jobSubmissions.size(); i++) {
-                            String job = jobSubmissions.get(i);
+                            Job job = jobSubmissions.get(i);
                             try (FileWriter writer = new FileWriter("job_submitter_data.txt", true)) {
                                 writer.write(job + "\n");
                                 writer.write("---------------------------\n");
                             } catch (IOException ex) {
                                 ex.printStackTrace();
                             }
-                            
+                            try {
+                                MySQLManager.setJob(job, MySQLManager.getClient("user1"));
+                            } catch (SQLException ex) {
+                                throw new RuntimeException(ex);
+                            }
+
                             jobClientIDs.add(tempJobClientIDs.get(i));
                             jobDurations.add(tempJobDurations.get(i));
                             
@@ -488,7 +498,7 @@ public class Main {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         for (int i = 0; i < jobSubmissions.size(); i++) {
-                            String job = jobSubmissions.get(i);
+                            Job job = jobSubmissions.get(i);
                             int clientIDInt = tempJobClientIDs.get(i);
                             String message = "Your job was rejected: " + job;
 

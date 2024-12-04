@@ -2,15 +2,15 @@ import java.sql.Timestamp;
 
 public class Job {
     private String ID;
-    private String description;
-    private Timestamp timeToCompletion;
-    private double cost;
+    private String duration;
+    private String deadline;
+    private String timestamp;
 
-    public Job(String ID, String description, Timestamp timeToCompletion, double cost) {
+    public Job(String ID, String duration, String deadline, String timestamp) {
         this.ID = ID;
-        this.description = description;
-        this.timeToCompletion = timeToCompletion;
-        this.cost = cost;
+        this.duration = duration;
+        this.deadline = deadline;
+        this.timestamp = timestamp;
     }
 
     public String getID() {
@@ -21,31 +21,32 @@ public class Job {
         this.ID = ID;
     }
 
-    public String getDescription() {
-        return description;
+    public String getDuration() {
+        return duration;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public String getDeadline() {
+        return deadline;
     }
 
-    public Timestamp getTimeToCompletion() {
-        return timeToCompletion;
+    public void setDeadline(String deadline) {
+        this.deadline = deadline;
     }
 
-    public void setTimeToCompletion(Timestamp timeToCompletion) {
-        this.timeToCompletion = timeToCompletion;
+    public void setDuration(String duration) {
+        this.duration = duration;
     }
 
-    public double getCost() {
-        return cost;
+    public String getTimestamp() {
+        return timestamp;
     }
 
-    public void setCost(double cost) {
-        this.cost = cost;
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
     }
+
 
     public String toString() {
-        return getID() + "\n" + getDescription() + "\n" + getTimeToCompletion() + "\n" + getCost();
+        return getID() + "\n" + getDuration() + "\n" + getDeadline() + "\n" + getTimestamp();
     }
 }
