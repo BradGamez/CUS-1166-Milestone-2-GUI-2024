@@ -55,7 +55,7 @@ public class MySQLManager {
         Statement statement = getConnection().createStatement();
         ResultSet resultSet = statement.executeQuery("SELECT COUNT(*) FROM VCRTS.accountData;");
         resultSet.next();
-        int count = resultSet.getInt("count(*)") + 1;
+        int count = resultSet.getInt("count(*)");
         return count;
     }
 
