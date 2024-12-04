@@ -557,7 +557,7 @@ public class Main {
                             
                             //Notify the server
                             Server.notifyClient(ownerIDInt, message);
-                            JOptionPane.showMessageDialog(frame, message);
+                            JOptionPane.showMessageDialog(frame, car, "Car Accepted", JOptionPane.INFORMATION_MESSAGE);
 
                             // Remove the accepted car from the list
                             carOwnerSubmissions.remove(index);
@@ -575,7 +575,7 @@ public class Main {
                         	
                         	//Notify the server
                             Server.notifyClient(ownerIDInt, message);
-                            JOptionPane.showMessageDialog(frame, message);
+                            JOptionPane.showMessageDialog(frame, car, "Car Rejected", JOptionPane.INFORMATION_MESSAGE);
 
                             // Remove the rejected car from the list
                             carOwnerSubmissions.remove(index);
