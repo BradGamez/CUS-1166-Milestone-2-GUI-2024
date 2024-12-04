@@ -27,8 +27,8 @@ public class MySQLManager {
 
     public static void setClient(Client client) throws SQLException {
         Statement statement = getConnection().createStatement();
-        ResultSet resultSetAccountData = statement.executeQuery("INSERT INTO VCRTS.accountData (username, password, ID) VALUES ('" + client.getUsername() +"', '" + client.getPassword() + "', '" + client.getID() +"');");
-        ResultSet resultSetClientData = statement.executeQuery("INSERT INTO VCRTS.clientData (ID, fullName, balance) VALUES ('" + client.getID() +"', '" + client.getFullName() + "', '" + client.getBalance() +"');");
+        statement.executeUpdate("INSERT INTO VCRTS.accountData (username, password, ID) VALUES ('" + client.getUsername() +"', '" + client.getPassword() + "', '" + client.getID() +"');");
+        statement.executeUpdate("INSERT INTO VCRTS.clientData (ID, fullName, balance) VALUES ('" + client.getID() +"', '" + client.getFullName() + "', '" + client.getBalance() +"');");
     }
 
     public static Owner getOwner(String username) throws SQLException {
@@ -47,8 +47,8 @@ public class MySQLManager {
 
     public static void setOwner(Owner owner) throws SQLException {
         Statement statement = getConnection().createStatement();
-        ResultSet resultSetAccountData = statement.executeQuery("INSERT INTO VCRTS.accountData (username, password, ID) VALUES ('" + owner.getUsername() +"', '" + owner.getPassword() + "', '" + owner.getID() +"');");
-        ResultSet resultSetClientData = statement.executeQuery("INSERT INTO VCRTS.ownerData (ID, fullName, balance) VALUES ('" + owner.getID() +"', '" + owner.getFullName() + "', '" + owner.getBalance() +"');");
+        statement.executeUpdate("INSERT INTO VCRTS.accountData (username, password, ID) VALUES ('" + owner.getUsername() +"', '" + owner.getPassword() + "', '" + owner.getID() +"');");
+        statement.executeUpdate("INSERT INTO VCRTS.ownerData (ID, fullName, balance) VALUES ('" + owner.getID() +"', '" + owner.getFullName() + "', '" + owner.getBalance() +"');");
     }
 
     public static List<Car> getCars(int ownerID) throws SQLException {
