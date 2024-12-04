@@ -2,7 +2,7 @@ import java.sql.*;
 import java.util.*;
 
 public class MySQLManager {
-    private static final String uri = "jdbc:mysql://home.ddns.bradpersaud.xyz:3305/VCRTS?user=cus1166&password=&autoReconnect=true&characterEncoding=utf8&useSSL=false";
+    private static final String uri = "jdbc:mysql://home.ddns.bradpersaud.xyz:3305/VCRTS?user=cus1166&password=shVS8TiOk5n8i7&autoReconnect=true&characterEncoding=utf8&useSSL=false";
     private static Connection connection;
 
     public static Connection getConnection() throws SQLException {
@@ -51,6 +51,21 @@ public class MySQLManager {
         statement.executeUpdate("INSERT INTO VCRTS.ownerData (ID, fullName, balance) VALUES ('" + owner.getID() +"', '" + owner.getFullName() + "', '" + owner.getBalance() +"');");
     }
 
+    public static int getNextAccountID() throws SQLException {
+        Statement statement = getConnection().createStatement();
+        ResultSet resultSet = statement.executeQuery("SELECT COUNT(*) FROM VCRTS.accountData;");
+        resultSet.next();
+        int count = resultSet.getInt("count(*)") + 1;
+        return count;
+    }
+
+    public static String getUsername(int ID) throws SQLException {
+        Statement statement = getConnection().createStatement();
+        ResultSet resultSet = statement.executeQuery("SELECT * FROM accountData WHERE accountData.ID = '" + ID + "';");
+        resultSet.next();
+        String name = resultSet.getString("username");
+        return name;
+    }
     public static List<Car> getCars(int ownerID) throws SQLException {
         final List<Car> list = new ArrayList<>();
         Statement statement = getConnection().createStatement();
@@ -75,10 +90,10 @@ public class MySQLManager {
         statement.executeUpdate("INSERT INTO VCRTS.carData (ownerID, model, make, year, VIN, plateNum, type, acceptingJobs) VALUES ('" + owner.getID() + "', '" + car.getModel() + "', '" + car.getMake() + "', '" + car.getYear() + "', '" + car.getVIN() + "', '" + car.getPlateNum() + "', '" + car.getType() + "', '" + car.isAcceptingJobs() +"');");
     }
 
-    public static List<ClientSubmission> getClientSubmissions(int clientID) throws SQLException {
+    public static List<ClientSubmission> getClientSubmissions(int creatorID) throws SQLException {
         final List<ClientSubmission> list = new ArrayList<>();
         Statement statement = getConnection().createStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT * FROM clientSubmissions WHERE clientSubmissions.ID = '" + clientID + "';");
+        ResultSet resultSet = statement.executeQuery("SELECT * FROM clientSubmissions WHERE clientSubmissions.creatorID = '" + creatorID + "';");
 
         while (resultSet.next()) {
             final String ID = resultSet.getString("ID");
@@ -91,15 +106,15 @@ public class MySQLManager {
         return list;
     }
 
-    public static void setClientSubmissions(ClientSubmission clientSubmission) throws SQLException {
+    public static void setClientSubmissions(ClientSubmission clientSubmission, int creatorID) throws SQLException {
         Statement statement = getConnection().createStatement();
-        statement.executeUpdate("INSERT INTO VCRTS.clientSubmissions (ID, duration, deadline, timestamp) VALUES ('" + clientSubmission.getID() + "', '" + clientSubmission.getDuration() + "', '" + clientSubmission.getDeadline() + "', '" + clientSubmission.getTimestamp() + "');");
+        statement.executeUpdate("INSERT INTO VCRTS.clientSubmissions (ID, duration, deadline, timestamp, creatorID) VALUES ('" + clientSubmission.getID() + "', '" + clientSubmission.getDuration() + "', '" + clientSubmission.getDeadline() + "', '" + clientSubmission.getTimestamp() + "', '" + creatorID + "');");
     }
 
-    public static List<ClientSubmission> getOwnerSubmissions(int clientID) throws SQLException {
-        final List<ClientSubmission> list = new ArrayList<>();
+    public static List<OwnerSubmission> getOwnerSubmissions(int creatorID) throws SQLException {
+        final List<OwnerSubmission> list = new ArrayList<>();
         Statement statement = getConnection().createStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT * FROM ownerSubmissions WHERE ownerSubmissions.ID = '" + clientID + "';");
+        ResultSet resultSet = statement.executeQuery("SELECT * FROM ownerSubmissions WHERE ownerSubmissions.creatorID = '" + creatorID + "';");
 
         while (resultSet.next()) {
             final String ID = resultSet.getString("ID");
@@ -107,13 +122,13 @@ public class MySQLManager {
             final String vin = resultSet.getString("vin");
             final String timestamp = resultSet.getString("timestamp");
 
-            list.add(new ClientSubmission(ID, vin, residencyTime, timestamp));
+            list.add(new OwnerSubmission(ID, vin, residencyTime, timestamp));
         }
         return list;
     }
 
-    public static void setOwnerSubmissions(OwnerSubmission ownerSubmission) throws SQLException {
+    public static void setOwnerSubmissions(OwnerSubmission ownerSubmission, int creatorID) throws SQLException {
         Statement statement = getConnection().createStatement();
-        statement.executeUpdate("INSERT INTO VCRTS.ownerSubmissions (ID, vin, residencyTime, timestamp) VALUES ('" + ownerSubmission.getID() + "', '" + ownerSubmission.getVin() + "', '" + ownerSubmission.getResidencyTime() + "', '" + ownerSubmission.getTimestamp() + "');");
+        statement.executeUpdate("INSERT INTO VCRTS.ownerSubmissions (ID, vin, residencyTime, timestamp, creatorID) VALUES ('" + ownerSubmission.getID() + "', '" + ownerSubmission.getVin() + "', '" + ownerSubmission.getResidencyTime() + "', '" + ownerSubmission.getTimestamp() + "', '" + creatorID + "');");
     }
 }

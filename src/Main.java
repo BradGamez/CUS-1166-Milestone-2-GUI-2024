@@ -15,6 +15,7 @@ public class Main {
     //ArrayLists to store multiple submissions
     private static ArrayList<ClientSubmission> jobSubmissions = new ArrayList<>();
     private static ArrayList<OwnerSubmission> carOwnerSubmissions = new ArrayList<>();
+    private static int accountID;
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("Vehicular Cloud Console");
@@ -286,8 +287,6 @@ public class Main {
         
         backButton.setVisible(true);
 
-        int[] userArrayPosition = new int[1];
-
         //job submitter login
         JButton clientJobSubmitterLoginButton = new JButton("Job Submitter Login");
         logInPanel.add(clientJobSubmitterLoginButton);
@@ -307,7 +306,7 @@ public class Main {
                         currentSelectionButton.setText("Job Submitter");
                         logInPanel.setVisible(false);
                         informationInputJobSubmitterPanel.setVisible(true);
-                        userArrayPosition[0] = clientArray.indexOf(client); // Optional: Save the client position if needed
+                        accountID = client.getID();
                     } else {
                         JOptionPane.showMessageDialog(frame, "Invalid username or password.");
                     }
@@ -337,7 +336,7 @@ public class Main {
                         currentSelectionButton.setText("Car Owner");
                         logInPanel.setVisible(false);
                         informationInputCarOwnerPanel.setVisible(true);
-                        userArrayPosition[0] = ownerArray.indexOf(owner); // Optional: Save the owner position if needed
+                        accountID = owner.getID();
                     } else {
                         JOptionPane.showMessageDialog(frame, "Invalid username or password.");
                     }
@@ -358,7 +357,7 @@ public class Main {
                 String username = userTextField.getText();
                 String password = passwordTextField.getText();
                 if(username.equals("user") && password.equals("password")){
-                    currentSelectionButton.setText("Cloud Controller");
+                    currentSelectionButton.setText("");
                     cloudControllerPanel.setVisible(true);
                     cloudFrame.setVisible(true);
                     
@@ -400,7 +399,7 @@ public class Main {
                         public void actionPerformed(ActionEvent e) {
                             //Write the accepted job to database
                             try {
-                                MySQLManager.setClientSubmissions(job);
+                                MySQLManager.setClientSubmissions(job, accountID);
                             } catch (SQLException ex) {
                                 throw new RuntimeException(ex);
                             }
@@ -447,7 +446,7 @@ public class Main {
                     jobPanel.add(singleJobPanel);
                 }
                 
-             //Mass Acception and Rejection
+             //Mass Accept and Reject
                 JButton acceptAllJobsButton = new JButton("Accept All");
                 JButton rejectAllJobsButton = new JButton("Reject All");
 
@@ -458,7 +457,7 @@ public class Main {
                         for (int i = 0; i < jobSubmissions.size(); i++) {
                             ClientSubmission job = jobSubmissions.get(i);
                             try {
-                                MySQLManager.setClientSubmissions(job);
+                                MySQLManager.setClientSubmissions(job, accountID);
                             } catch (SQLException ex) {
                                 throw new RuntimeException(ex);
                             }
@@ -544,10 +543,10 @@ public class Main {
                     acceptButton.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                            // Write the accepted car to the file
+                            // Write the accepted car to database
                             String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
                             try {
-                                MySQLManager.setOwnerSubmissions(car);
+                                MySQLManager.setOwnerSubmissions(car, accountID);
                             } catch (SQLException ex) {
                                 throw new RuntimeException(ex);
                             }
@@ -590,7 +589,7 @@ public class Main {
                     carPanel.add(singleCarPanel);
                 }
                 
-             // Mass Accept/Reject For Cars
+             // Mass Accept and Reject For Cars
                 JButton acceptAllCarsButton = new JButton("Accept All");
                 JButton rejectAllCarsButton = new JButton("Reject All");
 
@@ -601,7 +600,7 @@ public class Main {
                         for (int i = 0; i < carOwnerSubmissions.size(); i++) {
                             OwnerSubmission car = carOwnerSubmissions.get(i);
                             try {
-                                MySQLManager.setOwnerSubmissions(car);
+                                MySQLManager.setOwnerSubmissions(car, accountID);
                             } catch (SQLException ex) {
                                 throw new RuntimeException(ex);
                             }
@@ -657,17 +656,17 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //Read accepted jobs from the job submitter file
-                try (BufferedReader reader = new BufferedReader(new FileReader("job_submitter_data.txt"))) {
-                    String line;
-                    StringBuilder jobsContent = new StringBuilder();
-                    while ((line = reader.readLine()) != null) {
-                        jobsContent.append(line).append("\n");
-                    }
+                try {
+                    List submissions = MySQLManager.getClientSubmissions(accountID);
+
                     //Show the accepted jobs content in a dialog box
-                    JOptionPane.showMessageDialog(frame, jobsContent.toString(), "Accepted Jobs", JOptionPane.INFORMATION_MESSAGE);
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(frame, "Error reading accepted jobs file", "Error", JOptionPane.ERROR_MESSAGE);
+                    if(!submissions.isEmpty()){
+                        JOptionPane.showMessageDialog(frame, submissions.toString(), "Accepted Jobs", JOptionPane.INFORMATION_MESSAGE);
+                    }else{
+                        JOptionPane.showMessageDialog(frame, "No Accepted Jobs", "Accepted Jobs", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
                 }
             }
         });
@@ -680,17 +679,17 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //Read accepted cars from the car owner file
-                try (BufferedReader reader = new BufferedReader(new FileReader("car_owner_data.txt"))) {
-                    String line;
-                    StringBuilder carsContent = new StringBuilder();
-                    while ((line = reader.readLine()) != null) {
-                        carsContent.append(line).append("\n");
-                    }
+                try {
+                    List submissions = MySQLManager.getOwnerSubmissions(accountID);
+
                     //Show the accepted cars content in a dialog box
-                    JOptionPane.showMessageDialog(frame, carsContent.toString(), "Accepted Cars", JOptionPane.INFORMATION_MESSAGE);
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(frame, "Error reading accepted cars file", "Error", JOptionPane.ERROR_MESSAGE);
+                    if(!submissions.isEmpty()){
+                        JOptionPane.showMessageDialog(frame, submissions.toString(), "Accepted Cars", JOptionPane.INFORMATION_MESSAGE);
+                    }else{
+                        JOptionPane.showMessageDialog(frame, "No Accepted Cars", "Accepted Cars", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
                 }
             }
         });
@@ -788,8 +787,12 @@ public class Main {
                 String username = userCreateTextField.getText();
                 String password = passwordCreateTextField.getText();
                 String fullname = fullnameCreateTextField.getText();
-                Client newClient = new Client(username, password, clientArray.size() + ownerArray.size() + 1, fullname, 0.00);
-                clientArray.add(newClient);
+                try {
+                    accountID = MySQLManager.getNextAccountID();
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+                Client newClient = new Client(username, password,  accountID, fullname, 0.00);
 
                 try {
                     // Insert new client into the database
@@ -803,7 +806,7 @@ public class Main {
                 currentSelectionButton.setText("Account Created");
                 createAccountPanel.setVisible(false);
                 informationInputJobSubmitterPanel.setVisible(true);
-                userArrayPosition[0] = clientArray.size() - 1;
+
             }
         });
 
@@ -826,8 +829,13 @@ public class Main {
                 String carType = carTypeCreateTextField.getText();
                 
                 //Create a new owner and car objects
+                try {
+                    accountID = MySQLManager.getNextAccountID();
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
                 Car newCar = new Car(carModel, carMake, carYear, carVin, carPlateNumber, carType, true);
-                Owner newOwner = new Owner(username, password,clientArray.size() + ownerArray.size() + 1, fullname, 0.00, new Car(carModel, carMake, carYear, carVin, carPlateNumber, carType, true));
+                Owner newOwner = new Owner(username, password, accountID, fullname, 0.00, new Car(carModel, carMake, carYear, carVin, carPlateNumber, carType, true));
                	ownerArray.add(newOwner);
                	
                	try {
@@ -843,7 +851,6 @@ public class Main {
         		currentSelectionButton.setText("Account Created");
                 createAccountPanel.setVisible(false);
                 informationInputCarOwnerPanel.setVisible(true);
-                userArrayPosition[0] = ownerArray.size() - 1;
             }
         });
 
@@ -980,7 +987,7 @@ public class Main {
             public void actionPerformed(ActionEvent e) {
             	try {
             		//Fetch the client from the database using the username
-            		Client client = MySQLManager.getClient(clientArray.get(userArrayPosition[0]).getUsername());
+            		Client client = MySQLManager.getClient(MySQLManager.getUsername(accountID));
 
                     // Update the labels with the fetched data
                     clientName.setText(client.getFullName());
@@ -1054,7 +1061,7 @@ public class Main {
             public void actionPerformed(ActionEvent e) {
             	try {
                     // Fetch the owner from the database using the username
-                    Owner owner = MySQLManager.getOwner(ownerArray.get(userArrayPosition[0]).getUsername());
+                    Owner owner = MySQLManager.getOwner(MySQLManager.getUsername(accountID));
 
                     // Update the labels with the fetched data
                     ownerName.setText(owner.getFullName());
