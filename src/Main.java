@@ -415,10 +415,15 @@ public class Main {
 
                             // Remove the accepted job from the list
                             jobSubmissions.remove(index);
+                            
+                            Window window = SwingUtilities.getWindowAncestor(jobPanel);
+                            if(window != null) {
+                            	window.dispose();
+                            }
 
                             // Show acceptance message
                             JOptionPane.showMessageDialog(cloudFrame, "Job Accepted: " + job, "Job Status", JOptionPane.INFORMATION_MESSAGE);
-                            jobPanel.setVisible(false);
+                            //jobPanel.setVisible(false);
                         }
                     });
 
@@ -435,8 +440,14 @@ public class Main {
 
                         	// Remove the rejected job from the list
                             jobSubmissions.remove(index);
+                            
+                            Window window = SwingUtilities.getWindowAncestor(jobPanel);
+                            if(window != null) {
+                            	window.dispose();
+                            }
+                            
                             JOptionPane.showMessageDialog(cloudFrame, "Job Rejected: " + job, "Job Status", JOptionPane.INFORMATION_MESSAGE);
-                            jobPanel.setVisible(false);
+                            //jobPanel.setVisible(false);
                         }
                     });
 
@@ -470,13 +481,18 @@ public class Main {
 
                             // Notify the server
                             Server.notifyClient(clientIDInt, message);
+                            
+                            Window window = SwingUtilities.getWindowAncestor(jobPanel);
+                            if(window != null) {
+                            	window.dispose();
+                            }
                         }
 
                         
                         jobSubmissions.clear();
                         
                         JOptionPane.showMessageDialog(cloudFrame, "All jobs have been accepted!", "Mass Accept", JOptionPane.INFORMATION_MESSAGE);
-                        jobPanel.setVisible(false);
+                        //jobPanel.setVisible(false);
                     }
                 });
 
@@ -491,12 +507,17 @@ public class Main {
 
                             // Notify the server
                             Server.notifyClient(clientIDInt, message);
+                            
+                            Window window = SwingUtilities.getWindowAncestor(jobPanel);
+                            if(window != null) {
+                            	window.dispose();
+                            }
                         }
 
                         
                         jobSubmissions.clear();
                         JOptionPane.showMessageDialog(cloudFrame, "All jobs have been rejected!", "Mass Reject", JOptionPane.INFORMATION_MESSAGE);
-                        jobPanel.setVisible(false);
+                        //jobPanel.setVisible(false);
                     }
                 });
 
@@ -557,12 +578,17 @@ public class Main {
                             
                             //Notify the server
                             Server.notifyClient(ownerIDInt, message);
-                            JOptionPane.showMessageDialog(frame, car, "Car Accepted", JOptionPane.INFORMATION_MESSAGE);
+                            JOptionPane.showMessageDialog(frame, message);
+                            
+                            Window window = SwingUtilities.getWindowAncestor(carPanel);
+                            if(window != null) {
+                            	window.dispose();
+                            }
 
                             // Remove the accepted car from the list
                             carOwnerSubmissions.remove(index);
                             JOptionPane.showMessageDialog(cloudFrame, "Car Accepted: " + car, "Car Status", JOptionPane.INFORMATION_MESSAGE);
-                            carPanel.setVisible(false);
+                            //carPanel.setVisible(false);
                         }
                     });
                     
@@ -575,12 +601,17 @@ public class Main {
                         	
                         	//Notify the server
                             Server.notifyClient(ownerIDInt, message);
-                            JOptionPane.showMessageDialog(frame, car, "Car Rejected", JOptionPane.INFORMATION_MESSAGE);
+                            JOptionPane.showMessageDialog(frame, message);
+                            
+                            Window window = SwingUtilities.getWindowAncestor(carPanel);
+                            if(window != null) {
+                            	window.dispose();
+                            }
 
                             // Remove the rejected car from the list
                             carOwnerSubmissions.remove(index);
                             JOptionPane.showMessageDialog(cloudFrame, "Car Rejected: " + car, "Car Status", JOptionPane.INFORMATION_MESSAGE);
-                            carPanel.setVisible(false);
+                            //carPanel.setVisible(false);
                         }
                     });
 
@@ -610,12 +641,17 @@ public class Main {
 
                             // Notify the server
                             Server.notifyClient(ownerIDInt, message);
+                            
+                            Window window = SwingUtilities.getWindowAncestor(carPanel);
+                            if(window != null) {
+                            	window.dispose();
+                            }
                         }
 
                         
                         carOwnerSubmissions.clear();
                         JOptionPane.showMessageDialog(cloudFrame, "All cars have been accepted!", "Mass Accept", JOptionPane.INFORMATION_MESSAGE);
-                        carPanel.setVisible(false);
+                        //carPanel.setVisible(false);
                     }
                 });
 
@@ -630,12 +666,17 @@ public class Main {
 
                             // Notify the server
                             Server.notifyClient(ownerIDInt, message);
+                            
+                            Window window = SwingUtilities.getWindowAncestor(carPanel);
+                            if(window != null) {
+                            	window.dispose();
+                            }
                         }
 
                         
                         carOwnerSubmissions.clear();
                         JOptionPane.showMessageDialog(cloudFrame, "All cars have been rejected!", "Mass Reject", JOptionPane.INFORMATION_MESSAGE);
-                        carPanel.setVisible(false);
+                        //carPanel.setVisible(false);
                     }
                 });
 
