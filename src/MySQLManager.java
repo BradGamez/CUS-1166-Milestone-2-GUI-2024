@@ -1,5 +1,6 @@
 import java.sql.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class MySQLManager {
     private static final String uri = "jdbc:mysql://home.ddns.bradpersaud.xyz:3305/VCRTS?user=cus1166&password=&autoReconnect=true&characterEncoding=utf8&useSSL=false";
@@ -130,5 +131,39 @@ public class MySQLManager {
     public static void setOwnerSubmissions(OwnerSubmission ownerSubmission, int creatorID) throws SQLException {
         Statement statement = getConnection().createStatement();
         statement.executeUpdate("INSERT INTO VCRTS.ownerSubmissions (ID, vin, residencyTime, timestamp, creatorID) VALUES ('" + ownerSubmission.getID() + "', '" + ownerSubmission.getVin() + "', '" + ownerSubmission.getResidencyTime() + "', '" + ownerSubmission.getTimestamp() + "', '" + creatorID + "');");
+    }
+
+    public static String getJobDuration() throws SQLException {
+        Statement statement = getConnection().createStatement();
+        ResultSet resultSet = statement.executeQuery("SELECT clientSubmissions.ID, clientSubmissions.duration FROM clientSubmissions;");
+        final List<String> ID = new ArrayList<>();
+        final List<Integer> durations = new ArrayList<>();
+        int totalDuration = 0;
+
+        while (resultSet.next()){
+            ID.add(resultSet.getString("ID"));
+            totalDuration += Integer.parseInt(resultSet.getString("duration"));
+            durations.add(totalDuration);
+        }
+        String jobDuration = "Client ID(s): " + ID.stream().map(String::valueOf).collect(Collectors.joining(", ")) + "\n" +
+                "Job Completion Times (hrs): " + durations.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(", "));;
+        return jobDuration;
+    }
+
+    public static String getTotalJobDuration() throws SQLException {
+        Statement statement = getConnection().createStatement();
+        ResultSet resultSet = statement.executeQuery("SELECT clientSubmissions.ID, clientSubmissions.duration FROM clientSubmissions;");
+        final List<String> ID = new ArrayList<>();
+        int totalDuration = 0;
+
+        while (resultSet.next()){
+            ID.add(resultSet.getString("ID"));
+            totalDuration += Integer.parseInt(resultSet.getString("duration"));
+        }
+        String totalJobDuration = String.format("Client ID(s): " + ID.stream().map(String::valueOf).collect(Collectors.joining(", ")) + "\n" +
+                "Total Job Duration: %d hr%s", totalDuration, totalDuration == 1 ? "" : "s");;
+        return totalJobDuration;
     }
 }

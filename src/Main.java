@@ -226,20 +226,13 @@ public class Main {
         calculateCompletionButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                List<Integer> completionTimes = new ArrayList<>();
-                int totalDuration = 0;
-
-                //Calculate the completion time for each job in FIFO order
-                for (int duration : jobDurations) {
-                    totalDuration += duration;
-                    completionTimes.add(totalDuration);
-                }
-
                 //Format and display the completion times
-                String message = "Client ID(s): " + jobClientIDs.stream().map(String::valueOf).collect(Collectors.joining(", ")) + "\n" +
-                        "Job Completion Times (hrs): " + completionTimes.stream()
-                        .map(String::valueOf)
-                        .collect(Collectors.joining(", "));
+                String message = null;
+                try {
+                    message = MySQLManager.getJobDuration();
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
                 JOptionPane.showMessageDialog(cloudFrame, message);
             }
         });
@@ -251,10 +244,12 @@ public class Main {
         calculateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int totalDuration = jobDurations.stream().mapToInt(Integer::intValue).sum();
-                //Convert totalDuration to hours and format the message
-                String message = String.format("Client ID(s): " + jobClientIDs.stream().map(String::valueOf).collect(Collectors.joining(", ")) + "\n" +
-                        "Total Job Duration: %d hr%s", totalDuration, totalDuration == 1 ? "" : "s");
+                String message = null;
+                try {
+                    message = MySQLManager.getTotalJobDuration();
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
                 JOptionPane.showMessageDialog(cloudFrame, message);
             }
         });
@@ -578,7 +573,7 @@ public class Main {
                             
                             //Notify the server
                             Server.notifyClient(ownerIDInt, message);
-                            JOptionPane.showMessageDialog(frame, message);
+                            JOptionPane.showMessageDialog(frame, car, "Car Accepted", JOptionPane.INFORMATION_MESSAGE);
                             
                             Window window = SwingUtilities.getWindowAncestor(carPanel);
                             if(window != null) {
@@ -601,7 +596,7 @@ public class Main {
                         	
                         	//Notify the server
                             Server.notifyClient(ownerIDInt, message);
-                            JOptionPane.showMessageDialog(frame, message);
+                            JOptionPane.showMessageDialog(frame, car, "Car Rejected", JOptionPane.INFORMATION_MESSAGE);
                             
                             Window window = SwingUtilities.getWindowAncestor(carPanel);
                             if(window != null) {
